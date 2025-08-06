@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
 using CommandLine;
-using AnimatedGif;
+using ImageMagick;
 
 namespace RayTracer
 {
@@ -216,21 +216,28 @@ namespace RayTracer
         /// <param name="outputName">Base name for the output GIF file</param>
         private static void GenerateGif(int frameCount, int framesPerSecond, string outputName)
         {
-            using (var gif = AnimatedGif.AnimatedGif.Create($"{outputName}.gif", 60))
+            int delay = 100 / framesPerSecond; 
+
+            using (var collection = new MagickImageCollection())
             {
                 for (int i = 0; i < frameCount; i++)
                 {
                     string frameFileName = $"{outputName}_{i + 1}.png";
                     if (File.Exists(frameFileName))
                     {
-                        var frameImage = System.Drawing.Image.FromFile(frameFileName);
-                        gif.AddFrame(frameImage, delay: 1000 / framesPerSecond, quality: GifQuality.Default);
+                        var frame = new MagickImage(frameFileName);
+                        frame.AnimationDelay = (uint)delay;
+                        frame.Format = MagickFormat.Gif;
+                        collection.Add(frame);
                     }
                     else
                     {
                         Console.WriteLine($"Error: Frame file {frameFileName} does not exist.");
                     }
                 }
+
+                collection.Optimize();
+                collection.Write($"{outputName}.gif");
             }
         }
     }
