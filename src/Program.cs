@@ -116,10 +116,14 @@ namespace RayTracer
                                     time,
                                     options.OutputImageWidth,
                                     options.OutputImageHeight,
-                                    $"{outputName}_{i + 1}.png"
+                                    options.OutputFilePath.Replace(".png", $"_{i + 1}.png")
                                 );
                             }
-                            GenerateGif(options.FrameCount, options.FramesPerSecond, outputName);
+                            GenerateGif(
+                                options.FrameCount,
+                                options.FramesPerSecond,
+                                options.OutputFilePath.Replace(".png", ".gif")
+                            );
                         }
 
                         // Got to this point? Success!
@@ -213,8 +217,8 @@ namespace RayTracer
         /// </summary>
         /// <param name="frameCount">Number of frames in the animation</param>
         /// <param name="framesPerSecond">Frames per second for the GIF</param>
-        /// <param name="outputName">Base name for the output GIF file</param>
-        private static void GenerateGif(int frameCount, int framesPerSecond, string outputName)
+        /// <param name="outputPath">Output file path for the GIF</param>
+        private static void GenerateGif(int frameCount, int framesPerSecond, string outputPath)
         {
             int delay = 100 / framesPerSecond; 
 
@@ -222,7 +226,7 @@ namespace RayTracer
             {
                 for (int i = 0; i < frameCount; i++)
                 {
-                    string frameFileName = $"{outputName}_{i + 1}.png";
+                    string frameFileName = outputPath.Replace(".gif", $"_{i + 1}.png");
                     if (File.Exists(frameFileName))
                     {
                         var frame = new MagickImage(frameFileName);
@@ -237,7 +241,7 @@ namespace RayTracer
                 }
 
                 collection.Optimize();
-                collection.Write($"{outputName}.gif");
+                collection.Write(outputPath);
             }
         }
     }
