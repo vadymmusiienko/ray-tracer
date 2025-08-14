@@ -84,17 +84,6 @@ namespace RayTracer
         /// <param name="time">Time since start in seconds</param>
         public void Render(Image outputImage, double time = 0)
         {
-            // Color to write
-            // Color color = new Color(1, 1, 0); //Red
-            // int numOfPix = outputImage.Width * outputImage.Height;
-
-            // // Write to all pixels
-            // for (int pid = 0; pid < numOfPix; pid++)
-            // {
-            //     outputImage.SetPixel(pid, color);
-            // }
-
-
             // Set world image boundaries
             camera.ComputeWorldImageBounds(60.0, outputImage.Width, outputImage.Height);
 
@@ -103,7 +92,22 @@ namespace RayTracer
             {
                 for (int px = 0; px < outputImage.Width; px++)
                 {
+                    // Fire a ray through this pixel
                     Ray ray = camera.GenerateRay(px, py);
+
+                    // See if the ray hit anything
+                    foreach (SceneEntity entity in this.entities)
+                    {
+                        RayHit hit = entity.Intersect(ray);
+                        if (hit != null)
+                        {
+                            // We got a hit!
+                            // TODO: Make sure to check if this is the first hit or not
+                            // TODO: Save the Rayhit in a set or smth
+                            Color color = entity.Material.DiffuseColor;
+                            outputImage.SetPixel(px, py, color);
+                        }
+                    }
                 }
             }
 
