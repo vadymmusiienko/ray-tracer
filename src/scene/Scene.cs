@@ -84,7 +84,29 @@ namespace RayTracer
         /// <param name="time">Time since start in seconds</param>
         public void Render(Image outputImage, double time = 0)
         {
-            // Begin writing your code here...
+            // Color to write
+            // Color color = new Color(1, 1, 0); //Red
+            // int numOfPix = outputImage.Width * outputImage.Height;
+
+            // // Write to all pixels
+            // for (int pid = 0; pid < numOfPix; pid++)
+            // {
+            //     outputImage.SetPixel(pid, color);
+            // }
+
+
+            // Set world image boundaries
+            camera.ComputeWorldImageBounds(60.0, outputImage.Width, outputImage.Height);
+
+            // Fire rays into the world
+            for (int py = 0; py < outputImage.Height; py++)
+            {
+                for (int px = 0; px < outputImage.Width; px++)
+                {
+                    Ray ray = camera.GenerateRay(px, py);
+                }
+            }
+
         }
     }
 }

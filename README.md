@@ -1,13 +1,14 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/oMRiv2DB)
+
 # COMP30019 - Project 1 - Ray Tracer
 
 This is your README.md... you should write anything relevant to your
 implementation here.
 
-Please ensure your student details are specified below (*exactly* as on UniMelb
+Please ensure your student details are specified below (_exactly_ as on UniMelb
 records):
 
-**Name:** ... \
+**Name:** Vadym \
 **Student Number:** XXXXXXX \
 **Username:** ... \
 **Email:** ...@student.unimelb.edu.au
@@ -23,40 +24,40 @@ Tip: To tick, place an x between the square brackes [ ], like so: [x]
 
 ##### Stage 1
 
-- [x] Stage 1.1 - Familiarise yourself with the template
-- [ ] Stage 1.2 - Implement vector mathematics
-- [ ] Stage 1.3 - Fire a ray for each pixel
-- [ ] Stage 1.4 - Calculate ray-entity intersections
-- [ ] Stage 1.5 - Output primitives as solid colours
+-   [x] Stage 1.1 - Familiarise yourself with the template
+-   [ ] Stage 1.2 - Implement vector mathematics
+-   [ ] Stage 1.3 - Fire a ray for each pixel
+-   [ ] Stage 1.4 - Calculate ray-entity intersections
+-   [ ] Stage 1.5 - Output primitives as solid colours
 
 ##### Stage 2
 
-- [ ] Stage 2.1 - Illumination
-- [ ] Stage 2.2 - Shadow rays
-- [ ] Stage 2.3 - Reflection rays
-- [ ] Stage 2.4 - Refraction rays
-- [ ] Stage 2.5 - The Whitted Illumination Model
+-   [ ] Stage 2.1 - Illumination
+-   [ ] Stage 2.2 - Shadow rays
+-   [ ] Stage 2.3 - Reflection rays
+-   [ ] Stage 2.4 - Refraction rays
+-   [ ] Stage 2.5 - The Whitted Illumination Model
 
 ##### Stage 3
 
-- [ ] Stage 3.1 - Advanced features
-- [ ] Stage 3.2 - Advanced add-ons
-  - [ ] A.1 - Anti-aliasing
-  - [ ] A.2 - Soft shadows
-  - [ ] A.3 - Depth of field blur
-  - [ ] A.4 - Motion blur
-  - [ ] B.1 - Color texture mapping
-  - [ ] B.2 - Bump or normal mapping
-  - [ ] B.3 - Procedural textures
-  - [ ] C.1 - Simple animation
-  - [ ] C.2 - Keyframe animation
-  - [ ] C.3 - Camera animation
+-   [ ] Stage 3.1 - Advanced features
+-   [ ] Stage 3.2 - Advanced add-ons
+    -   [ ] A.1 - Anti-aliasing
+    -   [ ] A.2 - Soft shadows
+    -   [ ] A.3 - Depth of field blur
+    -   [ ] A.4 - Motion blur
+    -   [ ] B.1 - Color texture mapping
+    -   [ ] B.2 - Bump or normal mapping
+    -   [ ] B.3 - Procedural textures
+    -   [ ] C.1 - Simple animation
+    -   [ ] C.2 - Keyframe animation
+    -   [ ] C.3 - Camera animation
 
-*Please summarise your approach(es) to stage 3 here.*
+_Please summarise your approach(es) to stage 3 here._
 
 ## Final scene render
 
-Be sure to replace ```/images/final_scene.png``` with your final render so it
+Be sure to replace `/images/final_scene.png` with your final render so it
 shows up here.
 
 ![My final render](images/final_scene.png)
@@ -71,7 +72,7 @@ dotnet run -- (... your command line args)
 
 ## Sample outputs
 
-We have provided you with some sample tests located at ```/tests/*```. So you
+We have provided you with some sample tests located at `/tests/*`. So you
 have some point of comparison, here are the outputs our ray tracer solution
 produces for given command line inputs (for the first two stages, left and right
 respectively):
@@ -100,5 +101,4 @@ dotnet run -- -f tests/sample_scene_2.txt -o images/sample_scene_2.png
 
 ## References
 
-*You must list any references you used - add them here!*
-
+_You must list any references you used - add them here!_
