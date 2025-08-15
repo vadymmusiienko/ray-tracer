@@ -15,7 +15,7 @@ namespace RayTracer
         private const int MaxDepth = 5; // TODO: Move/Change?
 
         // Default background color
-        private Color backgroungColor = new Color(0, 0, 0); // TODO: Move/change?
+        private Color backgroundColor = new Color(0, 0, 0); // TODO: Move/change?
         private SceneOptions options;
         private Camera camera;
         private Color ambientLightColor;
@@ -249,7 +249,7 @@ namespace RayTracer
             // Check if current depth exceeds max depth
             if (currDepth > MaxDepth)
             {
-                return this.backgroungColor; // No more contributions
+                return this.backgroundColor; // No more contributions
             }
 
             // Find the first hit (if any)
@@ -277,40 +277,88 @@ namespace RayTracer
             // Check if hit anything
             if (closestHit == null)
             {
-                return this.backgroungColor; // No hit
+                return this.backgroundColor; // No hit
             }
 
             // Get color using Phong shading method
             Color currColor = PhongShading(closestHit, closestEntity.Material);
 
-            // Check if the hit object is reflective
-            double Kr = closestEntity.Material.Reflectivity; // Reflectivity
 
-            if (Kr == 0)
-            {
-                return currColor; // Not reflective
-            }
-
-            // Reflective object - compute reflection
-            // C_reflected = Kr · Trace(R_reflected, depth + 1)
-
-            // 1. Compute the reflection ray
-            // R = D − 2 (D · N)N
+            // Ray direction and Rayhit normal for reflection and refraction
             Vector3 D = ray.Direction;
             Vector3 N = closestHit.Normal;
-            Vector3 R = D - 2 * (D.Dot(N)) * N; // Reflection ray direction
 
-            // Offset to avoid "premature" hit
-            Vector3 reflectionOrigin = closestHit.Position + R * 1e-6;
+            // Reflection 
+            double Kr = closestEntity.Material.Reflectivity; // Reflectivity
+            Color reflectionColor = this.backgroundColor;
+            if (Kr > 0)
+            {
+                // C_reflected = Kr · Trace(R_reflected, depth + 1)
+                // Compute the reflection ray : R = D − 2 (D · N)N
+                Vector3 R = (D - 2 * D.Dot(N) * N).Normalized(); // Reflection ray direction
 
-            Ray reflectionRay = new Ray(reflectionOrigin, R); // Reflection ray
+                // Offset to avoid "premature" hit
+                Vector3 reflectionOrigin = closestHit.Position + R * 1e-6;
 
-            // 2. Fire the reflection ray (with new reflection depth)
-            Color reflectionColor = TraceRay(reflectionRay, currDepth + 1);
+                Ray reflectionRay = new Ray(reflectionOrigin, R); // Reflection ray
 
-            // 3. Compute final color with reflection
-            currColor *= (1 - Kr); // Proportion of the current color
+                // Fire the reflection ray (with new reflection depth)
+                reflectionColor = TraceRay(reflectionRay, currDepth + 1);
+            }
+
+            // Refraction
+            double Kt = closestEntity.Material.Transmissivity;
+            Color refractionColor = this.backgroundColor;
+            if (Kt > 0)
+            {
+                // C_refracted = Kt · Trace(R_refracted, depth + 1)
+                // Compute the refraction ray
+                double cos_i = -D.Dot(N);
+                Vector3 normal = N; // Copy the normal (in case we flip it)
+                double n_i = 1.0; // TODO: Air = 1.0?
+                double n_t = closestEntity.Material.RefractiveIndex;
+
+                // Exiting the material
+                if (cos_i < 0)
+                {
+                    // Flip cos and normal
+                    cos_i = -cos_i;
+                    normal = -normal;
+
+                    // Flip n_i and n_t
+                    var temp = n_i;
+                    n_i = n_t;
+                    n_t = temp;
+                }
+
+                double n = n_i / n_t;
+                double under_sqrt = 1 - n * n * (1 - cos_i * cos_i);
+
+                // Cannot take sqrt of neg nums (Don't do anything is negative ??)
+                if (under_sqrt >= 0)
+                {
+                    // Refraction ray direction
+                    Vector3 T = (n * D + ((n * cos_i - Math.Sqrt(under_sqrt))) * normal).Normalized();
+
+                    // Offset to avoid "premature" hit
+                    Vector3 refractionOrigin = closestHit.Position + T * 1e-6;
+
+                    Ray refractionRay = new Ray(refractionOrigin, T); // Refraction ray
+
+                    // Fire the refraction ray (with new reflection depth)
+                    refractionColor = TraceRay(refractionRay, currDepth + 1);
+                }
+                else
+                {
+                    // TODO: What do i do here?
+                }
+
+            }
+
+            // Compute final color with reflection and refraction
+            currColor *= 1 - Kr - Kt; // Proportion of the current color
             currColor += reflectionColor * Kr; // Add the proportion of the reflected color
+            currColor += refractionColor * Kt; // Add the proportion of the refracted color
 
             return currColor;
 
