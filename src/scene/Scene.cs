@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace RayTracer
 {
@@ -76,6 +77,112 @@ namespace RayTracer
         }
 
         /// <summary>
+        /// Calcualte Diffuse Reflection for a RayHit (overall light - makes it 3d)
+        /// <param name="rayHit">RayHit object</param>
+        /// <param name="Cmd">Material’s diffuse color</param>
+        /// TODO: Move this method somewehre else (like PointLight class?)
+        public Color DiffuseReflection(RayHit rayHit, Color Cmd)
+        {
+            // Cd = Cmd Cl max(0, ˆN · ˆL) - Lambertian model
+            Color finalDiffuse = new Color(0, 0, 0);
+
+            foreach (PointLight light in this.lights)
+            {
+                // ˆN - Surface normal
+                Vector3 N = rayHit.Normal;
+
+                // ˆL - Direction from the hit point to the light
+                Vector3 L = (light.Position - rayHit.Position).Normalized();
+
+                // Cl - Light color
+                Color Cl = light.Color;
+
+                // Cd - Diffuse reflection component
+                Color Cd = Cmd * Cl * Math.Max(0, N.Dot(L));
+
+                // Add to the final diffuse
+                finalDiffuse += Cd;
+            }
+
+            return finalDiffuse;
+        }
+
+        /// <summary>
+        /// Calcualte Specular Reflection for a RayHit (shiny highlights)
+        /// <param name="rayHit">RayHit object</param>
+        /// <param name="Cms">Material’s specular color</param>
+        /// <param name="Ns">Shininess exponent (controls sharpness of the highlight)</param>
+        /// TODO: Move this method somewehre else (like PointLight class?)
+        public Color SpecularReflection(RayHit rayHit, Color Cms, double Ns)
+        {
+            // Cs = Cms Cl [max(0, ˆR · ˆV )]^Ns
+            Color finalSpecular = new Color(0, 0, 0);
+
+            foreach (PointLight light in this.lights)
+            {
+                // ˆN - Surface normal
+                Vector3 N = rayHit.Normal;
+
+                // ˆL - Direction from the hit point to the light
+                Vector3 L = (light.Position - rayHit.Position).Normalized();
+
+                // Cl - Light color
+                Color Cl = light.Color;
+
+                // ˆV - Direction towards the camera
+                Vector3 V = (camera.Transform.Position - rayHit.Position).Normalized();
+
+                // ˆR - Mirror reflection direction of the light
+                Vector3 R = (2 * N.Dot(L) * N - L).Normalized(); // TODO: Check this formula
+
+                // Cs - Specular reflection component
+                double factor = Math.Max(0, R.Dot(V));
+
+                // If factor is 0, then Cs is 0
+                if (factor == 0)
+                {
+                    // This if statement fixes float arithmetic inaccuracy
+                    continue;
+                }
+
+                // Cs - Specular reflection component
+                Color Cs = Cms * Cl * Math.Pow(factor, Ns);
+
+                // Add to the final specular
+                finalSpecular += Cs;
+            }
+
+            return finalSpecular;
+        }
+
+        /// <summary>
+        /// Calcualte Ambient Reflection for a RayHit
+        /// <param name="Cma">Material’s ambient color<param\>
+        /// TODO: Move this method somewehre else (like PointLight class?)
+        private Color AmbientReflection(Color Cma)
+        {
+            // Ca = Cma Cla
+            // ambientLightColor is Cla
+            Color Ca = Cma * ambientLightColor;
+            return Ca;
+        }
+
+        /// <summary>
+        /// Calcualte the final local colour a RayHit
+        /// <param name="rayHit">RayHit object</param>
+        /// <param name="mat">Hit object's material</param>
+        /// TODO: Move this method somewehre else (like PointLight class?) 
+        public Color PhongShading(RayHit rayHit, Material mat)
+        {
+            Color Ca = AmbientReflection(mat.AmbientColor);
+            Color CdSum = DiffuseReflection(rayHit, mat.DiffuseColor);
+            Color CsSum = SpecularReflection(rayHit, mat.SpecularColor, mat.Shininess);
+
+            Color Clocal = Ca + CdSum + CsSum;
+            return Clocal;
+        }
+
+        /// <summary>
         /// Render the scene to an output image. This is where the bulk
         /// of your ray tracing logic should go... though you may wish to
         /// break it down into multiple functions as it gets more complex!
@@ -104,8 +211,14 @@ namespace RayTracer
                             // We got a hit!
                             // TODO: Make sure to check if this is the first hit or not
                             // TODO: Save the Rayhit in a set or smth
-                            Color color = entity.Material.DiffuseColor;
-                            outputImage.SetPixel(px, py, color);
+                            //Color color = entity.Material.DiffuseColor;
+                            //outputImage.SetPixel(px, py, color);
+
+                            // Use Phong Shading to find the color of this pixel
+                            Color finalColor = PhongShading(hit, entity.Material);
+
+                            // Set this pixel's color
+                            outputImage.SetPixel(px, py, finalColor);
                         }
                     }
                 }
