@@ -11,6 +11,11 @@ namespace RayTracer
     /// </summary>
     public class Scene
     {
+        // Max depth for reflection recursion
+        private const int MaxDepth = 5; // TODO: Move/Change?
+
+        // Default background color
+        private Color backgroungColor = new Color(0, 0, 0); // TODO: Move/change?
         private SceneOptions options;
         private Camera camera;
         private Color ambientLightColor;
@@ -231,6 +236,87 @@ namespace RayTracer
         }
 
         /// <summary>
+        /// 1. See if the ray hits any objects
+        /// 2. Find the closest hit
+        /// 3. Find the color of the pixel at this hit
+        /// 4. Reflect if reflective
+        /// 5. Return final color or null if no hit
+        /// </summary>
+        /// <param name="ray">Ray to trace output</param>
+        /// <param name="currDepth">Current depth of the recursion (for reflective objects only)</param>
+        public Color TraceRay(Ray ray, int currDepth = 0)
+        {
+            // Check if current depth exceeds max depth
+            if (currDepth > MaxDepth)
+            {
+                return this.backgroungColor; // No more contributions
+            }
+
+            // Find the first hit (if any)
+            RayHit closestHit = null;
+            SceneEntity closestEntity = null;
+            double closestDistSq = double.MaxValue;
+
+            foreach (SceneEntity entity in this.entities)
+            {
+                RayHit hit = entity.Intersect(ray);
+                if (hit != null)
+                {
+                    double distSq = (hit.Position - ray.Origin).LengthSq();
+
+                    // Check if this object is closer to the camera
+                    if (distSq < closestDistSq)
+                    {
+                        closestDistSq = distSq;
+                        closestHit = hit;
+                        closestEntity = entity;
+                    }
+                }
+            }
+
+            // Check if hit anything
+            if (closestHit == null)
+            {
+                return this.backgroungColor; // No hit
+            }
+
+            // Get color using Phong shading method
+            Color currColor = PhongShading(closestHit, closestEntity.Material);
+
+            // Check if the hit object is reflective
+            double Kr = closestEntity.Material.Reflectivity; // Reflectivity
+
+            if (Kr == 0)
+            {
+                return currColor; // Not reflective
+            }
+
+            // Reflective object - compute reflection
+            // C_reflected = Kr · Trace(R_reflected, depth + 1)
+
+            // 1. Compute the reflection ray
+            // R = D − 2 (D · N)N
+            Vector3 D = ray.Direction;
+            Vector3 N = closestHit.Normal;
+            Vector3 R = D - 2 * (D.Dot(N)) * N; // Reflection ray direction
+
+            // Offset to avoid "premature" hit
+            Vector3 reflectionOrigin = closestHit.Position + R * 1e-6;
+
+            Ray reflectionRay = new Ray(reflectionOrigin, R); // Reflection ray
+
+            // 2. Fire the reflection ray (with new reflection depth)
+            Color reflectionColor = TraceRay(reflectionRay, currDepth + 1);
+
+            // 3. Compute final color with reflection
+            currColor *= (1 - Kr); // Proportion of the current color
+            currColor += reflectionColor * Kr; // Add the proportion of the reflected color
+
+            return currColor;
+
+        }
+
+        /// <summary>
         /// Render the scene to an output image. This is where the bulk
         /// of your ray tracing logic should go... though you may wish to
         /// break it down into multiple functions as it gets more complex!
@@ -250,25 +336,33 @@ namespace RayTracer
                     // Fire a ray through this pixel
                     Ray ray = camera.GenerateRay(px, py);
 
-                    // See if the ray hit anything
-                    foreach (SceneEntity entity in this.entities)
-                    {
-                        RayHit hit = entity.Intersect(ray);
-                        if (hit != null)
-                        {
-                            // We got a hit!
-                            // TODO: Make sure to check if this is the first hit or not
-                            // TODO: Save the Rayhit in a set or smth
-                            //Color color = entity.Material.DiffuseColor;
-                            //outputImage.SetPixel(px, py, color);
+                    // Trace the ray (see if it hits anything and find its final color)
+                    Color pixelColor = TraceRay(ray);
+                    outputImage.SetPixel(px, py, pixelColor);
 
-                            // Use Phong Shading to find the color of this pixel
-                            Color finalColor = PhongShading(hit, entity.Material);
+                    // TODO: uncomment below to test without TraceRay()
+                    // // Fire a ray through this pixel
+                    // Ray ray = camera.GenerateRay(px, py);
 
-                            // Set this pixel's color
-                            outputImage.SetPixel(px, py, finalColor);
-                        }
-                    }
+                    // // See if the ray hit anything
+                    // foreach (SceneEntity entity in this.entities)
+                    // {
+                    //     RayHit hit = entity.Intersect(ray);
+                    //     if (hit != null)
+                    //     {
+                    //         // We got a hit!
+                    //         // TODO: Make sure to check if this is the first hit or not
+                    //         // TODO: Save the Rayhit in a set or smth
+                    //         //Color color = entity.Material.DiffuseColor;
+                    //         //outputImage.SetPixel(px, py, color);
+
+                    //         // Use Phong Shading to find the color of this pixel
+                    //         Color finalColor = PhongShading(hit, entity.Material);
+
+                    //         // Set this pixel's color
+                    //         outputImage.SetPixel(px, py, finalColor);
+                    //     }
+                    // }
                 }
             }
 
