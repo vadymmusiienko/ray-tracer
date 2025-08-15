@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.InteropServices;
 
 namespace RayTracer
@@ -88,6 +89,12 @@ namespace RayTracer
 
             foreach (PointLight light in this.lights)
             {
+                // Check if this light doesn't reach the rayHit point (Check for shadow)
+                if (IsInShadow(rayHit.Position, light.Position))
+                {
+                    continue;
+                }
+
                 // ˆN - Surface normal
                 Vector3 N = rayHit.Normal;
 
@@ -120,6 +127,12 @@ namespace RayTracer
 
             foreach (PointLight light in this.lights)
             {
+                // Check if this light doesn't reach the rayHit point (Check for shadow)
+                if (IsInShadow(rayHit.Position, light.Position))
+                {
+                    continue;
+                }
+
                 // ˆN - Surface normal
                 Vector3 N = rayHit.Normal;
 
@@ -180,6 +193,41 @@ namespace RayTracer
 
             Color Clocal = Ca + CdSum + CsSum;
             return Clocal;
+        }
+
+        /// <summary>
+        /// A helper method to check if the pixel is in shadow
+        /// <param name="hitPosition">RayHit's position</param>
+        /// <param name="lightPosition">Light source's position</param>
+        /// TODO: Move this method somewehre else (like PointLight class?) 
+        private bool IsInShadow(Vector3 hitPosition, Vector3 lightPosition)
+        {
+            // Shadow ray's direction (Direction to light)
+            Vector3 rayDir = (lightPosition - hitPosition).Normalized();
+
+            // Shadow ray's origin position slightly shifted (to avoid a 'premature' hit)
+            Vector3 rayOrigin = hitPosition + rayDir * 1e-6;
+
+            // Shadow ray (from the hit object towards the light source)
+            Ray shadowRay = new Ray(rayOrigin, rayDir);
+
+            // The distance from the hit position to the light source (Sq is faster to compute)
+            double distanceToLightSq = (lightPosition - rayOrigin).LengthSq();
+
+            foreach (SceneEntity entity in this.entities)
+            {
+                RayHit hit = entity.Intersect(shadowRay);
+                if (hit != null)
+                {
+                    // Find the distance from the original hit object to the new hit object
+                    double hitDistanceSq = (hit.Position - rayOrigin).LengthSq();
+                    if (hitDistanceSq < distanceToLightSq)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /// <summary>
