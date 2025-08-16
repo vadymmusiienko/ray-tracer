@@ -52,6 +52,9 @@ namespace RayTracer
             // Find ray's direction
             Vector3 dir = new Vector3(x, y, 1f).Normalized();
 
+            // Apply the camera rotation
+            dir = this.Transform.Rotation.Rotate(dir);
+
             // Cameras location is this ray's origin
             Vector3 origin = this.Transform.Position;
 
