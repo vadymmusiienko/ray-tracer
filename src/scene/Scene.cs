@@ -12,7 +12,10 @@ namespace RayTracer
     public class Scene
     {
         // Max depth for reflection recursion
-        private const int MaxDepth = 1; // TODO: Move/Change?
+        private const int MaxDepth = 5; // TODO: Move/Change?
+
+        // Horizontal FOV
+        private double FOV = 60.0;
 
         // Default background color
         private Color backgroundColor = new Color(0, 0, 0); // TODO: Move/change?
@@ -375,29 +378,50 @@ namespace RayTracer
         public void Render(Image outputImage, double time = 0)
         {
             // Set world image boundaries
-            camera.ComputeWorldImageBounds(60.0, outputImage.Width, outputImage.Height);
+            camera.ComputeWorldImageBounds(this.FOV, outputImage.Width, outputImage.Height);
 
-            // ------------------------------------------------------------------------
+            // !------------------------------------------------------------------------
             // Count how many pixels have been processed for the loading bar
             int pixelsProcessed = 0;
             int totalPixels = outputImage.Width * outputImage.Height;
 
             var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            // ------------------------------------------------------------------------
+            // !------------------------------------------------------------------------
+
+            // Get current AA settings (Anti-aliasing)
+            int AAMult = this.options.AAMultiplier;
 
             // Fire rays into the world
             for (int py = 0; py < outputImage.Height; py++)
             {
                 for (int px = 0; px < outputImage.Width; px++)
                 {
-                    // Fire a ray through this pixel
-                    Ray ray = camera.GenerateRay(px, py);
+                    // Color to be accumulated with AA
+                    Color pixelColor = new Color(0, 0, 0);
 
-                    // Trace the ray (see if it hits anything and find its final color)
-                    Color pixelColor = TraceRay(ray);
+                    // Anti-aliasing (multiple samples per pixel)
+                    for (int sampleX = 0; sampleX < AAMult; sampleX++)
+                    {
+                        for (int sampleY = 0; sampleY < AAMult; sampleY++)
+                        {
+                            // Divide pixel into AAMult * AAMult grid
+                            double offsetX = (sampleX + 0.5) / AAMult;
+                            double offsetY = (sampleY + 0.5) / AAMult;
+
+                            // Fire a ray through this pixel (subpixel if AA enabled)
+                            Ray ray = camera.GenerateRay(px, py, offsetX, offsetY);
+
+                            // Trace the ray (see if it hits anything and find its final color)
+                            pixelColor += TraceRay(ray); // Accumulate color (for AA purpuses)
+
+                        }
+                    }
+
+                    // Average AA Accumulated color and paint the pixel
+                    pixelColor /= (AAMult * AAMult);
                     outputImage.SetPixel(px, py, pixelColor);
 
-                    // ------------------------------------------------------------------------
+                    // !------------------------------------------------------------------------
                     // -------- Loading component ---------
                     // Increment processed pixels
                     pixelsProcessed++;
@@ -407,7 +431,7 @@ namespace RayTracer
                     {
                         Console.WriteLine($"Progress: {pixelsProcessed * 100 / totalPixels}% - Time elapsed: {stopwatch.Elapsed}");
                     }
-                    // ------------------------------------------------------------------------
+                    // !------------------------------------------------------------------------
 
                 }
             }

@@ -43,11 +43,11 @@ namespace RayTracer
             halfHeight = halfWidth / aspectRatio;
         }
 
-        public Ray GenerateRay(int px, int py)
+        public Ray GenerateRay(int px, int py, double offsetX, double offsetY)
         {
             // Find the mapping between px, py and image plane x and y
-            double y = halfHeight - ((py + 0.5) / imageHeight * (halfHeight * 2f));
-            double x = ((px + 0.5) / imageWidth * (halfWidth * 2)) - halfWidth;
+            double y = halfHeight - ((py + offsetY) / imageHeight * (halfHeight * 2f));
+            double x = ((px + offsetX) / imageWidth * (halfWidth * 2)) - halfWidth;
 
             // Find ray's direction
             Vector3 dir = new Vector3(x, y, 1f).Normalized();
