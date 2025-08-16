@@ -34,17 +34,16 @@ namespace RayTracer
             Vector3 L = ray.Origin - this.center; // This shifts the sphere to (0, 0)
 
             // Find a, b, c of quadratic equation (for discriminant)
-            // TODO: Is a always zero, because its normalized?
+            // !NOTE! a is always 1, because its normalized - we don't need to compute it
             //double a = ray.Direction.Dot(ray.Direction); // Ray.direction^2
             double b = 2 * L.Dot(ray.Direction); // 2 Ray.origin * Ray.direction
             double c = L.LengthSq() - radius * radius; // Ray.origin^2 - r^2
 
-            // Solve quadratic equation
-            // TODO: add 4 * a if doesn't work
-            double discr = b * b - 4 * c;
+            // Solve quadratic equation (b^2 - 4ac)
+            double discr = b * b - 4 * c; //! a is always 1
 
             // No solutions check
-            if (discr < 0)
+            if (discr < 1e-6)
             {
                 return null;
             }
@@ -52,25 +51,24 @@ namespace RayTracer
             // This is final distance (for the first hit, we don't care about the second)
             double t;
 
-            // One solution (discr is 0, 1e-6f is basically 0)
-            if (Math.Abs(discr) < 1e-6f)
+            // One solution (discr is 0, 1e-6 is basically 0)
+            if (Math.Abs(discr) < 1e-6)
             {
-                // TODO: Add (2 * a) in the denom if doesn't work
-                t = -b / 2;
+                // Find a solution (-b / 2a)
+                t = -b / 2; // ! a is always 1
 
                 // The hit is behind the ray
-                if (t < 0)
+                if (t < 1e-6)
                 {
                     return null;
                 }
             }
             else
             {
-                // Two solutions
-                // TODO: Add (2 * a) in the denom for t1 and t2 if doesn't work
+                // Two solutions ((-b +- sqrt(discr)) / 2a)
                 double sqrt_discr = Math.Sqrt(discr);
-                double t1 = (-b - sqrt_discr) / 2;
-                double t2 = (-b + sqrt_discr) / 2;
+                double t1 = (-b - sqrt_discr) / 2; // ! a is always 1
+                double t2 = (-b + sqrt_discr) / 2; // ! a is always 1
 
                 // Pick the smallest positive t
                 t = Math.Min(t1, t2);
@@ -80,11 +78,10 @@ namespace RayTracer
             // Find the hitpoint
             Vector3 hitPoint = ray.Origin + ray.Direction * t;
 
-            // Find normal to the hitpoint for a sphere
-            // TODO: Instead of using .Normalized(), can divide by the radius - might be faster
-            Vector3 normal = (hitPoint - this.center).Normalized();
+            // Find normal to the hitpoint for a sphere (divide by radius to normalize - faster than .Normalized())
+            Vector3 normal = (hitPoint - this.center) / radius;
 
-            // TODO: Does incident need to be inverted?
+            // Find the incident
             Vector3 incident = -ray.Direction;
 
             // Return the hit

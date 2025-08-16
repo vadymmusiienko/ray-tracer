@@ -33,27 +33,25 @@ namespace RayTracer
         public RayHit Intersect(Ray ray)
         {
             // Find a normal (perpendicular to the triangle)
-            // TODO: Might need to flip (if facing the wrong direction)
-            Vector3 normal = (v1 - v0).Cross(v2 - v0).Normalized();
+            Vector3 normal = (v1 - v0).Cross(v2 - v1).Normalized();
 
             // Denom
             double denom = ray.Direction.Dot(normal);
 
-            // Parallel - doens't intersect (1e-6f is basically 0)
-            if (Math.Abs(denom) < 1e-6f)
+            // Parallel - doens't intersect (1e-6 is basically 0)
+            if (Math.Abs(denom) < 1e-6)
             {
                 return null;
             }
 
             // Nom
-            // TODO: Use v0 for center ?
-            double nom = normal.Dot(v0 - ray.Origin);
+            double nom = normal.Dot(v0 - ray.Origin); // Using v0 as center (doen't matter as long as the point lies on the plane)
 
             // t - distance from ray's origin to the hit point
             double t = nom / denom;
 
-            // The hit point is behind ray origin
-            if (t < 0)
+            // The hit point is behind ray origin (t < 0)
+            if (t < 1e-6)
             {
                 return null;
             }
@@ -80,18 +78,18 @@ namespace RayTracer
             // Inside of the triangle if reached this point (passed 3 tests)
 
 
-            // TODO: ??? Do I need to flip normal if angle < 90?
-            // Vector3 hitNormal = this.normal;
-            //     if (Vector3.Dot(ray.Direction, hitNormal) > 0)
-            //     {
-            //         hitNormal = -hitNormal;
-            //     }
+            // Flip the normal if angle < 90
+            Vector3 hitNormal = normal;
+            if (ray.Direction.Dot(hitNormal) > 0)
+            {
+                hitNormal = -hitNormal;
+            }
 
-            // TODO: Does incident need to be inverted?
+            // Find the incident
             Vector3 incident = -ray.Direction;
 
             // Create Rayhit object
-            RayHit hit = new RayHit(hitPoint, normal, incident, this.material);
+            RayHit hit = new RayHit(hitPoint, hitNormal, incident, this.material);
 
             return hit;
         }

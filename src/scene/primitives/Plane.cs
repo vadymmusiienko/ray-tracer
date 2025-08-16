@@ -32,45 +32,45 @@ namespace RayTracer
         /// <returns>Hit data (or null if no intersection)</returns>
         public RayHit Intersect(Ray ray)
         {
-        
-        // Denom
-        double denom = ray.Direction.Dot(this.normal);
 
-        // Parallel - doens't intersect (1e-6f is basically 0)
-        if (Math.Abs(denom) < 1e-6f)
-        {
-            return null;
-        }
+            // Denom
+            double denom = ray.Direction.Dot(this.normal);
 
-        // Nom
-        double nom = this.normal.Dot(this.center - ray.Origin);
+            // Parallel - doens't intersect (1e-6 is basically 0)
+            if (Math.Abs(denom) < 1e-6)
+            {
+                return null;
+            }
 
-        // t - distance from ray's origin to the hit point
-        double t = nom / denom;
+            // Nom
+            double nom = this.normal.Dot(this.center - ray.Origin);
 
-        // The hit point is behind ray origin
-        if (t < 0)
-        {
-            return null;
-        }
+            // t - distance from ray's origin to the hit point
+            double t = nom / denom;
 
-        // Find the hitpoint
-        Vector3 hitPoint = ray.Origin + ray.Direction * t;
+            // The hit point is behind ray origin
+            if (t < 0)
+            {
+                return null;
+            }
 
-        // TODO: ??? Do I need to flip normal if angle < 90?
-        // Vector3 hitNormal = this.normal;
-        //     if (Vector3.Dot(ray.Direction, hitNormal) > 0)
-        //     {
-        //         hitNormal = -hitNormal;
-        //     }
+            // Find the hitpoint
+            Vector3 hitPoint = ray.Origin + ray.Direction * t;
 
-        // TODO: Does incident need to be inverted?
-        Vector3 incident = -ray.Direction;
+            // Flip normal if angle < 90
+            Vector3 hitNormal = this.normal;
+            if (ray.Direction.Dot(hitNormal) > 0)
+            {
+                hitNormal = -hitNormal;
+            }
 
-        // Create Rayhit object
-        RayHit hit = new RayHit(hitPoint, this.normal, incident, this.material);
+            // Find the incident
+            Vector3 incident = -ray.Direction;
 
-        return hit;
+            // Create Rayhit object
+            RayHit hit = new RayHit(hitPoint, hitNormal, incident, this.material);
+
+            return hit;
         }
 
         /// <summary>

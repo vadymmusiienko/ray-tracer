@@ -12,7 +12,7 @@ namespace RayTracer
     public class Scene
     {
         // Max depth for reflection recursion
-        private const int MaxDepth = 5; // TODO: Move/Change?
+        private const int MaxDepth = 10; // TODO: Move/Change?
 
         // Default background color
         private Color backgroundColor = new Color(0, 0, 0); // TODO: Move/change?
@@ -260,6 +260,7 @@ namespace RayTracer
             foreach (SceneEntity entity in this.entities)
             {
                 RayHit hit = entity.Intersect(ray);
+
                 if (hit != null)
                 {
                     double distSq = (hit.Position - ray.Origin).LengthSq();
@@ -272,6 +273,7 @@ namespace RayTracer
                         closestEntity = entity;
                     }
                 }
+
             }
 
             // Check if hit anything
@@ -282,7 +284,6 @@ namespace RayTracer
 
             // Get color using Phong shading method
             Color currColor = PhongShading(closestHit, closestEntity.Material);
-
 
             // Ray direction and Rayhit normal for reflection and refraction
             Vector3 D = ray.Direction;
@@ -387,30 +388,6 @@ namespace RayTracer
                     // Trace the ray (see if it hits anything and find its final color)
                     Color pixelColor = TraceRay(ray);
                     outputImage.SetPixel(px, py, pixelColor);
-
-                    // TODO: uncomment below to test without TraceRay()
-                    // // Fire a ray through this pixel
-                    // Ray ray = camera.GenerateRay(px, py);
-
-                    // // See if the ray hit anything
-                    // foreach (SceneEntity entity in this.entities)
-                    // {
-                    //     RayHit hit = entity.Intersect(ray);
-                    //     if (hit != null)
-                    //     {
-                    //         // We got a hit!
-                    //         // TODO: Make sure to check if this is the first hit or not
-                    //         // TODO: Save the Rayhit in a set or smth
-                    //         //Color color = entity.Material.DiffuseColor;
-                    //         //outputImage.SetPixel(px, py, color);
-
-                    //         // Use Phong Shading to find the color of this pixel
-                    //         Color finalColor = PhongShading(hit, entity.Material);
-
-                    //         // Set this pixel's color
-                    //         outputImage.SetPixel(px, py, finalColor);
-                    //     }
-                    // }
                 }
             }
 
