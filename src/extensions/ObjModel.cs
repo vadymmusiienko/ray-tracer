@@ -66,13 +66,15 @@ namespace RayTracer
                 // Parse vertices (v)
                 if (identifier == "v")
                 {
-                    this.vertices.Add(new Vector3(double.Parse(first), double.Parse(second), double.Parse(third)));
+                    Vector3 v = new Vector3(double.Parse(first), double.Parse(second), double.Parse(third));
+                    this.vertices.Add(ApplyTransform(v));
                     continue;
                 }
 
                 // Parse normals (vn)
                 if (identifier == "vn")
                 {
+                    // TODO : Transform normals
                     this.normals.Add(new Vector3(double.Parse(first), double.Parse(second), double.Parse(third)));
                     continue;
                 }
@@ -89,7 +91,6 @@ namespace RayTracer
 
                     // TODO: Do something with normals (update the triangle class)
                     // ! I don't do anything with the normals yet
-                    // TODO: Also transform before creating a triangle
 
                     // Create and add a face (triangle)
                     Triangle triangle = new Triangle(vertices[v0idx], vertices[v1idx], vertices[v2idx], this.material);
@@ -97,6 +98,21 @@ namespace RayTracer
                 }
 
             }
+        }
+
+
+        /// <summary>
+        /// Apply Scale, rotation and translation (transform) a vertex
+        /// </summary>
+        /// <param name="vertex">Vertex to transform</param>
+        /// <returns> Transformed Vector3 vertex </returns>
+        private Vector3 ApplyTransform(Vector3 vertex)
+        {
+            // Scale -> rotate -> translate
+            Vector3 v = vertex * this.transform.Scale;
+            v = this.transform.Rotation.Rotate(v);
+            v += this.transform.Position;
+            return v;
         }
 
         /// <summary>
