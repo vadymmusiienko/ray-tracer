@@ -12,7 +12,7 @@ namespace RayTracer
     public class Scene
     {
         // Max depth for reflection recursion
-        private const int MaxDepth = 10; // TODO: Move/Change?
+        private const int MaxDepth = 1; // TODO: Move/Change?
 
         // Default background color
         private Color backgroundColor = new Color(0, 0, 0); // TODO: Move/change?
@@ -377,6 +377,12 @@ namespace RayTracer
             // Set world image boundaries
             camera.ComputeWorldImageBounds(60.0, outputImage.Width, outputImage.Height);
 
+            // ------------------------------------------------------------------------
+            // Count how many pixels have been processed for the loading bar
+            int pixelsProcessed = 0;
+            int totalPixels = outputImage.Width * outputImage.Height;
+            // ------------------------------------------------------------------------
+
             // Fire rays into the world
             for (int py = 0; py < outputImage.Height; py++)
             {
@@ -388,6 +394,19 @@ namespace RayTracer
                     // Trace the ray (see if it hits anything and find its final color)
                     Color pixelColor = TraceRay(ray);
                     outputImage.SetPixel(px, py, pixelColor);
+
+                    // ------------------------------------------------------------------------
+                    // -------- Loading component ---------
+                    // Increment processed pixels
+                    pixelsProcessed++;
+
+                    // Print progress every 1% (or some interval)
+                    if (pixelsProcessed % (totalPixels / 100) == 0)
+                    {
+                        Console.WriteLine($"Progress: {pixelsProcessed * 100 / totalPixels}%");
+                    }
+                    // ------------------------------------------------------------------------
+
                 }
             }
 
