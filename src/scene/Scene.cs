@@ -381,6 +381,8 @@ namespace RayTracer
             // Count how many pixels have been processed for the loading bar
             int pixelsProcessed = 0;
             int totalPixels = outputImage.Width * outputImage.Height;
+
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
             // ------------------------------------------------------------------------
 
             // Fire rays into the world
@@ -403,7 +405,7 @@ namespace RayTracer
                     // Print progress every 1% (or some interval)
                     if (pixelsProcessed % (totalPixels / 100) == 0)
                     {
-                        Console.WriteLine($"Progress: {pixelsProcessed * 100 / totalPixels}%");
+                        Console.WriteLine($"Progress: {pixelsProcessed * 100 / totalPixels}% - Time elapsed: {stopwatch.Elapsed}");
                     }
                     // ------------------------------------------------------------------------
 
