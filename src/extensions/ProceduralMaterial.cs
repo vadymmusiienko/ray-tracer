@@ -56,18 +56,18 @@ namespace RayTracer
                 return this.color1;
             }
 
-            // Scale texture coordinates to get u and v
+            // Scale texture coordinates to get how many times u and v repeats
             TextureCoord tex = coord.Value;
-            double u = tex.U * scaleU;
-            double v = tex.V * scaleV;
+            double uRepeats = tex.U * scaleU;
+            double vRepeats = tex.V * scaleV;
 
             // Checkers
             if (pattern == PatternType.Checkers)
             {
                 // Convert double to an integer to alternate color
                 // Use floor to map (0.0 - 0.99 to 0, 1.0 - 1.99 to 1, etc)
-                int ui = (int)Math.Floor(u);
-                int vi = (int)Math.Floor(v);
+                int ui = (int)Math.Floor(uRepeats); // ! Should be in range (0, ScaleU)
+                int vi = (int)Math.Floor(vRepeats); // Should be in range (0, ScaleV)
 
                 // Alternate based on parity of ui vi sum
                 if ((ui + vi) % 2 == 0)
@@ -86,7 +86,7 @@ namespace RayTracer
             {
                 // Here we care only about u coordinate (alternate only 1 way to get stripes)
                 // Use floor to map (0.0 - 0.99 to 0, 1.0 - 1.99 to 1, etc)
-                int ui = (int)Math.Floor(u);
+                int ui = (int)Math.Floor(uRepeats);
 
                 // Alternate based on parity of ui
                 if (ui % 2 == 0)
