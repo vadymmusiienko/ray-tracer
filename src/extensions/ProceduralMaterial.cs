@@ -40,5 +40,69 @@ namespace RayTracer
             this.color1 = color1;
             this.color2 = color2;
         }
+
+        /// <summary>
+        /// Get the color of the material at a given texture coordinate.
+        /// </summary>
+        /// <param name="u">The u coordinate in the texture map</param>
+        /// <param name="v">The v coordinate in the texture map</param>
+        /// <returns>The color at the specified texture coordinate</returns>
+        //!------------------------------
+        //TODO: Finish this!
+        public override Color GetDiffuseColor(TextureCoord? coord)
+        {
+            if (!coord.HasValue)
+            {
+                return this.color1;
+            }
+
+            // Scale texture coordinates to get u and v
+            TextureCoord tex = coord.Value;
+            double u = tex.U * scaleU;
+            double v = tex.V * scaleV;
+
+            // Checkers
+            if (pattern == PatternType.Checkers)
+            {
+                // Convert double to an integer to alternate color
+                // Use floor to map (0.0 - 0.99 to 0, 1.0 - 1.99 to 1, etc)
+                int ui = (int)Math.Floor(u);
+                int vi = (int)Math.Floor(v);
+
+                // Alternate based on parity of ui vi sum
+                if ((ui + vi) % 2 == 0)
+                {
+                    return this.color1;
+                }
+                else
+                {
+                    return this.color2;
+                }
+
+            }
+
+            // Stripes
+            if (pattern == PatternType.Stripes)
+            {
+                // Here we care only about u coordinate (alternate only 1 way to get stripes)
+                // Use floor to map (0.0 - 0.99 to 0, 1.0 - 1.99 to 1, etc)
+                int ui = (int)Math.Floor(u);
+
+                // Alternate based on parity of ui
+                if (ui % 2 == 0)
+                {
+                    return this.color1;
+                }
+                else
+                {
+                    return this.color2;
+                }
+
+
+            }
+
+            // If a pattern is not implemented - return default color
+            return this.color1;
+        }
     }
 }

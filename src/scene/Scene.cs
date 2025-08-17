@@ -196,7 +196,12 @@ namespace RayTracer
         public Color PhongShading(RayHit rayHit, Material mat)
         {
             Color Ca = AmbientReflection(mat.AmbientColor);
-            Color CdSum = DiffuseReflection(rayHit, mat.DiffuseColor);
+
+            // In order to account for textures, find diffuse color at a specific point
+            //!---------------------------------------------
+            // TODO:
+            // If has a texture - gets diffuse color at the texture coord - otherwise just base color
+            Color CdSum = DiffuseReflection(rayHit, mat.GetDiffuseColor(rayHit.TextureCoord));
             Color CsSum = SpecularReflection(rayHit, mat.SpecularColor, mat.Shininess);
 
             Color Clocal = Ca + CdSum + CsSum;
