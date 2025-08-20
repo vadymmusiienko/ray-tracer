@@ -84,21 +84,13 @@ namespace RayTracer
             // Stripes
             if (pattern == PatternType.Stripes)
             {
-                // Here we care only about u coordinate (alternate only 1 way to get stripes)
-                // Use floor to map (0.0 - 0.99 to 0, 1.0 - 1.99 to 1, etc)
-                int ui = (int)Math.Floor(uRepeats);
+                // Use the fractional part to create stripes
+                double fracU = (uRepeats - Math.Floor(uRepeats)); // Gets 0.0 - 0.999...
 
-                // Alternate based on parity of ui
-                if (ui % 2 == 0)
-                {
-                    return this.color1;
-                }
-                else
-                {
-                    return this.color2;
-                }
+                bool firstHalf = fracU < 0.5;
 
-
+                Color result = firstHalf ? this.color1 : this.color2;
+                return result;
             }
 
             // If a pattern is not implemented - return default color

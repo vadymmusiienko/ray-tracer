@@ -42,7 +42,8 @@ namespace RayTracer
             // TODO: Find barycentric coordinates
             // TODO: Find a new normal for smooth shading
             // Find a normal (perpendicular to the triangle)
-            Vector3 normal = (v1 - v0).Cross(v2 - v1).Normalized();
+            // Vector3 normal = (v1 - v0).Cross(v2 - v1).Normalized();
+            Vector3 normal = (v1 - v0).Cross(v2 - v0).Normalized(); // Correct
 
             // Denom
             double denom = ray.Direction.Dot(normal);
@@ -89,49 +90,60 @@ namespace RayTracer
             //!----------------------------------------------------
             // TODO: Is this how you support smooth shading?
             // Calculate barycentric coordinates to go from 3d to 2d (for procedural material and for smooth shading)
-            edge1 = v2 - v0;
-            Vector3 vp = hitPoint - v0;
+            // edge1 = v2 - v0;
+            // Vector3 vp = hitPoint - v0;
 
-            double d00 = edge0.Dot(edge0);
-            double d01 = edge0.Dot(edge1);
-            double d11 = edge1.Dot(edge1);
-            double d20 = vp.Dot(edge0);
-            double d21 = vp.Dot(edge1);
+            // double d00 = edge0.Dot(edge0);
+            // double d01 = edge0.Dot(edge1);
+            // double d11 = edge1.Dot(edge1);
+            // double d20 = vp.Dot(edge0);
+            // double d21 = vp.Dot(edge1);
 
-            double denomBary = d00 * d11 - d01 * d01;
-            double v = (d11 * d20 - d01 * d21) / denomBary;
-            double w = (d00 * d21 - d01 * d20) / denomBary;
-            double u = 1.0 - v - w;
+            // double denomBary = d00 * d11 - d01 * d01;
+            // double v = (d11 * d20 - d01 * d21) / denomBary;
+            // double w = (d00 * d21 - d01 * d20) / denomBary;
+            // double u = 1.0 - v - w;
+            // Fixed barycentric coordinate calculation
+            // Calculate the area of the main triangle
+            double mainTriangleArea = (v1 - v0).Cross(v2 - v0).Length();
 
-            // Interpolated normal (smooth shading)
-            // TODO: ...
+            // Calculate areas of sub-triangles - FIXED VERSION
+            double area0 = (v1 - hitPoint).Cross(v2 - hitPoint).Length();  // Area opposite to v0
+            double area1 = (v2 - hitPoint).Cross(v0 - hitPoint).Length();  // Area opposite to v1  
+            double area2 = (v0 - hitPoint).Cross(v1 - hitPoint).Length();  // Area opposite to v2
+
+            // Calculate barycentric coordinates (weights for each vertex)
+            double bary0 = area0 / mainTriangleArea;  // Weight for v0
+            double bary1 = area1 / mainTriangleArea;  // Weight for v1
+            double bary2 = area2 / mainTriangleArea;  // Weight for v2
+
+            // Optional: Normalize to ensure they sum to exactly 1.0
+            double sum = bary0 + bary1 + bary2;
+            bary0 /= sum;
+            bary1 /= sum;
+            bary2 /= sum;
+
+            // Interpolate normal for smooth shading
             Vector3 hitNormal = normal;
             if (n0.HasValue && n1.HasValue && n2.HasValue)
             {
-                hitNormal = (u * n0.Value + v * n1.Value + w * n2.Value).Normalized();
+                hitNormal = (bary0 * n0.Value + bary1 * n1.Value + bary2 * n2.Value).Normalized();
             }
 
-            //!----------------------------------------
-
-
-            // Flip the normal if angle < 90
-            // Vector3 hitNormal = normal;
+            // Flip the normal if needed
             if (ray.Direction.Dot(hitNormal) > 0)
             {
                 hitNormal = -hitNormal;
             }
 
-            //!------------------------------------------
-            // Texture coords
-            // Interpolated UV
+            // Interpolate texture coordinates - FIXED VERSION
             TextureCoord? hitUV = null;
             if (uv0.HasValue && uv1.HasValue && uv2.HasValue)
             {
-                double texU = u * uv0.Value.U + v * uv1.Value.U + w * uv2.Value.U;
-                double texV = u * uv0.Value.V + v * uv1.Value.V + w * uv2.Value.V;
+                double texU = bary0 * uv0.Value.U + bary1 * uv1.Value.U + bary2 * uv2.Value.U;
+                double texV = bary0 * uv0.Value.V + bary1 * uv1.Value.V + bary2 * uv2.Value.V;
                 hitUV = new TextureCoord(texU, texV);
             }
-            //!------------------------------------------------------
 
 
             // Find the incident

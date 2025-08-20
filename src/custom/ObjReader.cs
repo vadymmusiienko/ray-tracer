@@ -28,7 +28,6 @@ namespace RayTracer
             string[] lines = File.ReadAllLines(objFilePath);
             for (int i = 0; i < lines.Length; i++)
             {
-                // !Note: v - vertices, vn - normals to those vertices, f - faces
                 // Skip the comments and empty lines
                 if (lines[i].StartsWith('#') || string.IsNullOrWhiteSpace(lines[i]))
                 {
@@ -61,9 +60,8 @@ namespace RayTracer
                 // Parse normals (vn)
                 if (identifier == "vn")
                 {
-                    // TODO : Transform normals
-                    // !NOTE: Not sure how to transform normals
-                    normals.Add(new Vector3(double.Parse(parts[1]), double.Parse(parts[2]), double.Parse(parts[3])));
+                    Vector3 normal = new Vector3(double.Parse(parts[1]), double.Parse(parts[2]), double.Parse(parts[3]));
+                    normals.Add(ApplyNormalTransform(normal, transform));
                     continue;
                 }
 
@@ -96,12 +94,6 @@ namespace RayTracer
                         else
                             vnIndices[j] = -1; // Doesn't exist (-1)
                     }
-
-                    // TODO: Do something with normals (update the triangle class), also transform them?
-                    // ! I don't do anything with the normals yet
-
-                    // TODO: Do something with texture coords 
-                    // ! I don't do anything with text coords yet
 
                     // Collect vertices
                     Vector3 v0 = vertices[vIndices[0]];
@@ -137,5 +129,10 @@ namespace RayTracer
             return v;
         }
 
+        private static Vector3 ApplyNormalTransform(Vector3 normal, Transform transform)
+        {
+            Vector3 transformedNormal = transform.Rotation.Rotate(normal);
+            return transformedNormal.Normalized();
+        }
     }
 }
