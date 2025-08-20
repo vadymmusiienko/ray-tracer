@@ -14,6 +14,8 @@ namespace RayTracer
         // Store image width and image height
         private int imageWidth;
         private int imageHeight;
+        // Random number generator for aperture sampling
+        private static Random random = new Random();
 
         public Transform Transform { get; private set; }
 
@@ -43,23 +45,58 @@ namespace RayTracer
             halfHeight = halfWidth / aspectRatio;
         }
 
-        public Ray GenerateRay(int px, int py, double offsetX, double offsetY)
+        public Ray GenerateRay(int px, int py, double offsetX, double offsetY, double apertureRadius, double focalLength)
         {
             // Find the mapping between px, py and image plane x and y
             double y = halfHeight - ((py + offsetY) / imageHeight * (halfHeight * 2f));
             double x = ((px + offsetX) / imageWidth * (halfWidth * 2)) - halfWidth;
-
-            // Find ray's direction
-            Vector3 dir = new Vector3(x, y, 1f).Normalized();
+            Vector3 dir = new Vector3(x, y, 1.0).Normalized();
 
             // Apply the camera rotation
             dir = this.Transform.Rotation.Rotate(dir);
 
-            // Cameras location is this ray's origin
+            // Find ray's origin (camera's position)
             Vector3 origin = this.Transform.Position;
 
-            // Return the ray
+            // ! Depth of field blur
+            if (apertureRadius > 0.0)
+            {
+                // Calculate the focal point
+                Vector3 focalPoint = origin + (dir * focalLength);
+
+                // Find a random point on aperture (z = 0)
+                Vector3 aperturePoint = sampleAperture(apertureRadius);
+
+                // Rotate with the camera to find the actual offset
+                Vector3 apertureOffset = this.Transform.Rotation.Rotate(aperturePoint);
+
+                // Update the ray origin by adding the offset
+                origin += apertureOffset; // This is a new random point on camera's aperture
+
+                // Find the new direction from this new origin to the focal point
+                dir = (focalPoint - origin).Normalized();
+
+            }
+
+            // Works for both pinhole camera and camera with depth of field blur
             return new Ray(origin, dir);
+        }
+
+        /// <summary>
+        /// Helper static method to generate a random point in a circle (aperture)
+        /// Used for depth of field blur
+        /// </summary>
+        public static Vector3 sampleAperture(double radius)
+        {
+            // Generate uniform distribution within circle using polar coordinates
+            double r = radius * Math.Sqrt(random.NextDouble()); // Square root for uniform area distribution
+            double theta = random.NextDouble() * 2.0 * Math.PI;
+
+            // Convert to Cartesian coordinates (centered at origin)
+            double x = r * Math.Cos(theta);
+            double y = r * Math.Sin(theta);
+
+            return new Vector3(x, y, 0);
         }
 
         /// <summary>

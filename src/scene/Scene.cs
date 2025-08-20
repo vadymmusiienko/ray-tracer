@@ -14,11 +14,14 @@ namespace RayTracer
         // Max depth for reflection recursion
         private const int MaxDepth = 5; // TODO: Move/Change?
 
-        // Horizontal FOV
-        private double FOV = 60.0;
+        // Samples per pixel for Depth of field blur
+        private const int samplesPerPixDOF = 50; // TODO: Change this number
 
-        // Default background color
-        private Color backgroundColor = new Color(0, 0, 0); // TODO: Move/change?
+        // Horizontal FOV
+        private const double FOV = 60.0;
+
+        // Default black color
+        private Color black = new Color(0, 0, 0); // TODO: Move/change?
         private SceneOptions options;
         private Camera camera;
         private Color ambientLightColor;
@@ -154,7 +157,7 @@ namespace RayTracer
                 Vector3 V = (camera.Transform.Position - rayHit.Position).Normalized();
 
                 // ˆR - Mirror reflection direction of the light
-                Vector3 R = (2 * N.Dot(L) * N - L).Normalized(); // TODO: Check this formula
+                Vector3 R = (2 * N.Dot(L) * N - L).Normalized();
 
                 // Cs - Specular reflection component
                 double factor = Math.Max(0, R.Dot(V));
@@ -257,7 +260,7 @@ namespace RayTracer
             // Check if current depth exceeds max depth
             if (currDepth > MaxDepth)
             {
-                return this.backgroundColor; // No more contributions
+                return this.black; // No more contributions
             }
 
             // Find the first hit (if any)
@@ -287,7 +290,7 @@ namespace RayTracer
             // Check if hit anything
             if (closestHit == null)
             {
-                return this.backgroundColor; // No hit
+                return this.black; // No hit
             }
 
             // Get color using Phong shading method
@@ -299,7 +302,7 @@ namespace RayTracer
 
             // Reflection 
             double Kr = closestEntity.Material.Reflectivity; // Reflectivity
-            Color reflectionColor = this.backgroundColor;
+            Color reflectionColor = this.black;
             if (Kr > 0)
             {
                 // C_reflected = Kr · Trace(R_reflected, depth + 1)
@@ -317,7 +320,7 @@ namespace RayTracer
 
             // Refraction
             double Kt = closestEntity.Material.Transmissivity;
-            Color refractionColor = this.backgroundColor;
+            Color refractionColor = this.black;
             if (Kt > 0)
             {
                 // C_refracted = Kt · Trace(R_refracted, depth + 1)
@@ -343,7 +346,7 @@ namespace RayTracer
                 double n = n_i / n_t;
                 double under_sqrt = 1 - n * n * (1 - cos_i * cos_i);
 
-                // Cannot take sqrt of neg nums (Don't do anything is negative ??)
+                // Cannot take sqrt of neg nums
                 if (under_sqrt >= 0)
                 {
                     // Refraction ray direction
@@ -359,7 +362,7 @@ namespace RayTracer
                 }
                 else
                 {
-                    // TODO: What do i do here?
+                    refractionColor = this.black;
                 }
 
             }
@@ -383,7 +386,7 @@ namespace RayTracer
         public void Render(Image outputImage, double time = 0)
         {
             // Set world image boundaries
-            camera.ComputeWorldImageBounds(this.FOV, outputImage.Width, outputImage.Height);
+            camera.ComputeWorldImageBounds(FOV, outputImage.Width, outputImage.Height);
 
             // !------------------------------------------------------------------------
             // Count how many pixels have been processed for the loading bar
@@ -396,12 +399,19 @@ namespace RayTracer
             // Get current AA settings (Anti-aliasing)
             int AAMult = this.options.AAMultiplier;
 
+            // Get current Depth of field blur settings
+            double apertureRadius = this.options.ApertureRadius; // Default 0 - No field of blur
+            double focalLength = this.options.FocalLength; // Default 1
+
+            // Determine if DOF is enabled (1 sample per pixel if not)
+            int samplesDOF = apertureRadius > 0.0 ? samplesPerPixDOF : 1;
+
             // Fire rays into the world
             for (int py = 0; py < outputImage.Height; py++)
             {
                 for (int px = 0; px < outputImage.Width; px++)
                 {
-                    // Color to be accumulated with AA
+                    // Color to be accumulated with AA and DOF if enabled
                     Color pixelColor = new Color(0, 0, 0);
 
                     // Anti-aliasing (multiple samples per pixel)
@@ -413,17 +423,21 @@ namespace RayTracer
                             double offsetX = (sampleX + 0.5) / AAMult;
                             double offsetY = (sampleY + 0.5) / AAMult;
 
-                            // Fire a ray through this pixel (subpixel if AA enabled)
-                            Ray ray = camera.GenerateRay(px, py, offsetX, offsetY);
+                            // Multiple samples per AA sample (if DOF enabled)
+                            for (int sampleDOF = 0; sampleDOF < samplesDOF; sampleDOF++)
+                            {
+                                // Fire a ray through this pixel (subpixel if AA enabled)
+                                Ray ray = camera.GenerateRay(px, py, offsetX, offsetY, apertureRadius, focalLength);
 
-                            // Trace the ray (see if it hits anything and find its final color)
-                            pixelColor += TraceRay(ray); // Accumulate color (for AA purpuses)
-
+                                // Trace the ray (see if it hits anything and find its final color)
+                                pixelColor += TraceRay(ray); // Accumulate color (for AA and DOF)
+                            }
                         }
                     }
 
-                    // Average AA Accumulated color and paint the pixel
-                    pixelColor /= (AAMult * AAMult);
+                    // Average accumulated pixel
+                    int totalSamples = AAMult * AAMult * samplesDOF;
+                    pixelColor /= totalSamples;
                     outputImage.SetPixel(px, py, pixelColor);
 
                     // !------------------------------------------------------------------------
