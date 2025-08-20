@@ -169,5 +169,32 @@ namespace RayTracer
         /// Z component of the vector.
         /// </summary>
         public double Z { get { return this.z; } }
+
+        /// <summary>
+        /// Returns a vector that is made from the smallest components of two vectors.
+        /// </summary>
+        public static Vector3 Min(Vector3 a, Vector3 b)
+        {
+            return new Vector3(
+                Math.Min(a.X, b.X),
+                Math.Min(a.Y, b.Y),
+                Math.Min(a.Z, b.Z)
+            );
+        }
+
+        /// <summary>
+        /// Returns a vector that is made from the largest components of two vectors.
+        /// </summary>
+        public static Vector3 Max(Vector3 a, Vector3 b)
+        {
+            return new Vector3(
+                Math.Max(a.X, b.X),
+                Math.Max(a.Y, b.Y),
+                Math.Max(a.Z, b.Z)
+            );
+        }
+
     }
+
+
 }

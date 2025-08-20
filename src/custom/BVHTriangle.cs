@@ -7,10 +7,15 @@ namespace RayTracer
     /// This class does not inherit from "SceneEntity" because it's only a subclass for ObjModel
     /// This class shouldn't ever be accessed from anywhere exept from ObjModel
     /// </summary>
-    class ObjFace
+    class BVHTriangle
     {
         // Vertices of the face
         private Vector3 v0, v1, v2;
+
+        // Getters for vertices
+        public Vector3 V0 => this.v0;
+        public Vector3 V1 => this.v1;
+        public Vector3 V2 => this.v2;
 
         // Texture coordinates
         private TextureCoord? uv0, uv1, uv2;
@@ -19,7 +24,10 @@ namespace RayTracer
         private Vector3? n0, n1, n2;
         private Material material;
 
-        public ObjFace(Vector3 v0, Vector3 v1, Vector3 v2,
+        // Return center of the triangle
+        public Vector3 Center => (v0 + v1 + v2) / 3.0;
+
+        public BVHTriangle(Vector3 v0, Vector3 v1, Vector3 v2,
                        TextureCoord? uv0, TextureCoord? uv1, TextureCoord? uv2,
                        Vector3? n0, Vector3? n1, Vector3? n2, Material material)
         {

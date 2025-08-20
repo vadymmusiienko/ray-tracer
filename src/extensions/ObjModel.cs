@@ -11,10 +11,8 @@ namespace RayTracer
     /// </summary>
     public class ObjModel : SceneEntity
     {
-        // Store all faces
-        List<ObjFace> faces;
-        // private string objFilePath;
-        // private Transform transform;
+        // Store the BVH Tree representing the object
+        private BVH bvhTree;
         private Material material;
 
         /// <summary>
@@ -25,13 +23,10 @@ namespace RayTracer
         /// <param name="material">Material applied to the model</param>
         public ObjModel(string objFilePath, Transform transform, Material material)
         {
-            // TODO: no need to store this?
-            // this.objFilePath = objFilePath;
-            // this.transform = transform;
             this.material = material;
 
             // Call the helper class to actually parse the file
-            faces = ObjReader.Parse(objFilePath, transform, material);
+            bvhTree = ObjReader.Parse(objFilePath, transform, material);
         }
 
         /// <summary>
@@ -42,32 +37,33 @@ namespace RayTracer
         /// <returns>Ray hit data, or null if no hit</returns>
         public RayHit Intersect(Ray ray)
         {
-            // Find the first hit (if any)
-            RayHit closestHit = null;
-            // Face closestFace = null;
-            double closestDistSq = double.MaxValue;
+            return bvhTree.Intersect(ray);
+            // // Find the first hit (if any)
+            // RayHit closestHit = null;
+            // // Face closestFace = null;
+            // double closestDistSq = double.MaxValue;
 
-            foreach (ObjFace face in this.faces)
-            {
-                RayHit hit = face.Intersect(ray);
+            // foreach (BVHTriangle face in this.faces)
+            // {
+            //     RayHit hit = face.Intersect(ray);
 
-                if (hit != null)
-                {
-                    double distSq = (hit.Position - ray.Origin).LengthSq();
+            //     if (hit != null)
+            //     {
+            //         double distSq = (hit.Position - ray.Origin).LengthSq();
 
-                    // Check if this object is closer to the camera
-                    if (distSq < closestDistSq)
-                    {
-                        closestDistSq = distSq;
-                        closestHit = hit;
-                        // closestFace = face;
-                    }
-                }
+            //         // Check if this object is closer to the camera
+            //         if (distSq < closestDistSq)
+            //         {
+            //             closestDistSq = distSq;
+            //             closestHit = hit;
+            //             // closestFace = face;
+            //         }
+            //     }
 
-            }
+            // }
 
-            // Return the closest hit
-            return closestHit;
+            // // Return the closest hit
+            // return closestHit;
         }
 
         /// <summary>
