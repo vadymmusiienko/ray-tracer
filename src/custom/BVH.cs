@@ -10,7 +10,10 @@ namespace RayTracer
     public class BVH
     {
         // Max number of splits
-        const int MaxDepth = 15; // TODO: Try changing
+        const int MaxDepth = 20; // TODO: Try changing
+
+        // Min number of triangles in a node
+        const int MinTriPerNode = 4; // TODO: Try changing
 
         // Store the root node
         Node root;
@@ -95,8 +98,13 @@ namespace RayTracer
             }
 
             // Recursively split it's children
-            Split(parent.childA, depth + 1);
-            Split(parent.childB, depth + 1);
+            if (parent.childA.TriangleCount > MinTriPerNode && parent.childB.TriangleCount > MinTriPerNode)
+            {
+                // Clear parent triangles to save memory
+                parent.triangles.Clear();
+                Split(parent.childA, depth + 1);
+                Split(parent.childB, depth + 1);
+            }
         }
 
         // Function to find the intersection point if any
@@ -236,12 +244,11 @@ namespace RayTracer
         {
             public BoundingBox bounds = new BoundingBox();
             public List<BVHTriangle> triangles = new List<BVHTriangle>();
+            public int TriangleCount => triangles.Count;
             public Node childA;
             public Node childB;
         }
 
     }
-
-
 
 }

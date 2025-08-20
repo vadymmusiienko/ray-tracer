@@ -12,7 +12,7 @@ namespace RayTracer
         // Vertices of the face
         private Vector3 v0, v1, v2;
 
-        // Getters for vertices
+        // Getters for vertices (for BVH)
         public Vector3 V0 => this.v0;
         public Vector3 V1 => this.v1;
         public Vector3 V2 => this.v2;
@@ -24,7 +24,7 @@ namespace RayTracer
         private Vector3? n0, n1, n2;
         private Material material;
 
-        // Return center of the triangle
+        // Return center of the triangle (For BVH)
         public Vector3 Center => (v0 + v1 + v2) / 3.0;
 
         public BVHTriangle(Vector3 v0, Vector3 v1, Vector3 v2,
@@ -46,12 +46,8 @@ namespace RayTracer
         public RayHit Intersect(Ray ray)
         {
 
-            // TODO: Use all 3 normals for smooth shading
-            // TODO: Find barycentric coordinates
-            // TODO: Find a new normal for smooth shading
             // Find a normal (perpendicular to the triangle)
-            // Vector3 normal = (v1 - v0).Cross(v2 - v1).Normalized();
-            Vector3 normal = (v1 - v0).Cross(v2 - v0).Normalized(); // Correct
+            Vector3 normal = (v1 - v0).Cross(v2 - v1).Normalized();
 
             // Denom
             double denom = ray.Direction.Dot(normal);
@@ -93,29 +89,14 @@ namespace RayTracer
             if (normal.Dot(edge2.Cross(vp2)) < 0)
                 return null;
 
-            // Inside of the triangle if reached this point (passed 3 tests)
+            // !Inside of the triangle if reached this point (passed 3 tests)!
 
-            //!----------------------------------------------------
-            // TODO: Is this how you support smooth shading?
             // Calculate barycentric coordinates to go from 3d to 2d (for procedural material and for smooth shading)
-            // edge1 = v2 - v0;
-            // Vector3 vp = hitPoint - v0;
 
-            // double d00 = edge0.Dot(edge0);
-            // double d01 = edge0.Dot(edge1);
-            // double d11 = edge1.Dot(edge1);
-            // double d20 = vp.Dot(edge0);
-            // double d21 = vp.Dot(edge1);
-
-            // double denomBary = d00 * d11 - d01 * d01;
-            // double v = (d11 * d20 - d01 * d21) / denomBary;
-            // double w = (d00 * d21 - d01 * d20) / denomBary;
-            // double u = 1.0 - v - w;
-            // Fixed barycentric coordinate calculation
             // Calculate the area of the main triangle
             double mainTriangleArea = (v1 - v0).Cross(v2 - v0).Length();
 
-            // Calculate areas of sub-triangles - FIXED VERSION
+            // Calculate areas of sub-triangles
             double area0 = (v1 - hitPoint).Cross(v2 - hitPoint).Length();  // Area opposite to v0
             double area1 = (v2 - hitPoint).Cross(v0 - hitPoint).Length();  // Area opposite to v1  
             double area2 = (v0 - hitPoint).Cross(v1 - hitPoint).Length();  // Area opposite to v2
@@ -124,12 +105,6 @@ namespace RayTracer
             double bary0 = area0 / mainTriangleArea;  // Weight for v0
             double bary1 = area1 / mainTriangleArea;  // Weight for v1
             double bary2 = area2 / mainTriangleArea;  // Weight for v2
-
-            // Optional: Normalize to ensure they sum to exactly 1.0
-            double sum = bary0 + bary1 + bary2;
-            bary0 /= sum;
-            bary1 /= sum;
-            bary2 /= sum;
 
             // Interpolate normal for smooth shading
             Vector3 hitNormal = normal;
@@ -144,7 +119,7 @@ namespace RayTracer
                 hitNormal = -hitNormal;
             }
 
-            // Interpolate texture coordinates - FIXED VERSION
+            // Interpolate texture coordinates
             TextureCoord? hitUV = null;
             if (uv0.HasValue && uv1.HasValue && uv2.HasValue)
             {
@@ -152,7 +127,6 @@ namespace RayTracer
                 double texV = bary0 * uv0.Value.V + bary1 * uv1.Value.V + bary2 * uv2.Value.V;
                 hitUV = new TextureCoord(texU, texV);
             }
-
 
             // Find the incident
             Vector3 incident = -ray.Direction;

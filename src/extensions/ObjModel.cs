@@ -6,8 +6,7 @@ namespace RayTracer
 {
     /// <summary>
     /// Add-on option C. You should implement your solution in this class template.
-    /// !NOTE: I modified this class to only store obj object's faces
-    /// !NOTE: Parcing happens in ObjReader
+    /// This stores the BVH Tree with all the triangles for optimization
     /// </summary>
     public class ObjModel : SceneEntity
     {
@@ -38,38 +37,11 @@ namespace RayTracer
         public RayHit Intersect(Ray ray)
         {
             return bvhTree.Intersect(ray);
-            // // Find the first hit (if any)
-            // RayHit closestHit = null;
-            // // Face closestFace = null;
-            // double closestDistSq = double.MaxValue;
-
-            // foreach (BVHTriangle face in this.faces)
-            // {
-            //     RayHit hit = face.Intersect(ray);
-
-            //     if (hit != null)
-            //     {
-            //         double distSq = (hit.Position - ray.Origin).LengthSq();
-
-            //         // Check if this object is closer to the camera
-            //         if (distSq < closestDistSq)
-            //         {
-            //             closestDistSq = distSq;
-            //             closestHit = hit;
-            //             // closestFace = face;
-            //         }
-            //     }
-
-            // }
-
-            // // Return the closest hit
-            // return closestHit;
         }
 
         /// <summary>
         /// The material attached to this object.
         /// </summary>
-        // TODO: Do i need to do smth abt ProceduralMaterial here?
         public Material Material { get { return this.material; } }
     }
 }
