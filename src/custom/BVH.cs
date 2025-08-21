@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Numerics;
+using System.Threading;
 
 namespace RayTracer
 {
@@ -40,20 +42,25 @@ namespace RayTracer
 
             for (int i = 0; i < triangleCount; i++)
             {
-                // Vertex indices
-                Vector3 v0 = vertices[vIndices[i * 3 + 0]];
-                Vector3 v1 = vertices[vIndices[i * 3 + 1]];
-                Vector3 v2 = vertices[vIndices[i * 3 + 2]];
+                // Handle negative indices by using GetIndex helper method
+                Vector3 v0 = vertices[GetIndex(vIndices[i * 3 + 0], vertices.Count)];
+                Vector3 v1 = vertices[GetIndex(vIndices[i * 3 + 1], vertices.Count)];
+                Vector3 v2 = vertices[GetIndex(vIndices[i * 3 + 2], vertices.Count)];
 
-                // Texture coords (nullable)
-                TextureCoord? uv0 = (vtIndices.Count > i * 3 + 0) ? textureCoords[vtIndices[i * 3 + 0]] : null;
-                TextureCoord? uv1 = (vtIndices.Count > i * 3 + 1) ? textureCoords[vtIndices[i * 3 + 1]] : null;
-                TextureCoord? uv2 = (vtIndices.Count > i * 3 + 2) ? textureCoords[vtIndices[i * 3 + 2]] : null;
+                TextureCoord? uv0 = (vtIndices.Count > i * 3 + 0) ?
+                    textureCoords[GetIndex(vtIndices[i * 3 + 0], textureCoords.Count)] : null;
+                TextureCoord? uv1 = (vtIndices.Count > i * 3 + 1) ?
+                    textureCoords[GetIndex(vtIndices[i * 3 + 1], textureCoords.Count)] : null;
+                TextureCoord? uv2 = (vtIndices.Count > i * 3 + 2) ?
+                    textureCoords[GetIndex(vtIndices[i * 3 + 2], textureCoords.Count)] : null;
 
-                // Normals (nullable)
-                Vector3? n0 = (vnIndices.Count > i * 3 + 0) ? normals[vnIndices[i * 3 + 0]] : null;
-                Vector3? n1 = (vnIndices.Count > i * 3 + 1) ? normals[vnIndices[i * 3 + 1]] : null;
-                Vector3? n2 = (vnIndices.Count > i * 3 + 2) ? normals[vnIndices[i * 3 + 2]] : null;
+                Vector3? n0 = (vnIndices.Count > i * 3 + 0) ?
+                    normals[GetIndex(vnIndices[i * 3 + 0], normals.Count)] : null;
+                Vector3? n1 = (vnIndices.Count > i * 3 + 1) ?
+                    normals[GetIndex(vnIndices[i * 3 + 1], normals.Count)] : null;
+                Vector3? n2 = (vnIndices.Count > i * 3 + 2) ?
+                    normals[GetIndex(vnIndices[i * 3 + 2], normals.Count)] : null;
+
 
                 // Create triangle
                 triangles[i] = new BVHTriangle(v0, v1, v2, uv0, uv1, uv2, n0, n1, n2, material);
@@ -62,6 +69,15 @@ namespace RayTracer
             // Create root node
             root = new Node() { bounds = bounds, triangles = new List<BVHTriangle>(triangles) };
             Split(root);
+        }
+
+        // Helper function to deal with negative indices
+        private int GetIndex(int objIndex, int listCount)
+        {
+            if (objIndex >= 0)
+                return objIndex;
+            else
+                return listCount + objIndex + 1; // Negative index: relative to end
         }
 
         // Helper function that splits the bounding box into 2 parts A and B
