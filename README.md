@@ -8,10 +8,10 @@ implementation here.
 Please ensure your student details are specified below (_exactly_ as on UniMelb
 records):
 
-**Name:** Vadym \
-**Student Number:** XXXXXXX \
-**Username:** ... \
-**Email:** ...@student.unimelb.edu.au
+**Name:** Vadym Musiienko\
+**Student Number:** 1785479 \
+**Username:** vmusiienko \
+**Email:** vmusiienko@student.unimelb.edu.au
 
 ## Completed stages
 
@@ -25,28 +25,28 @@ Tip: To tick, place an x between the square brackes [ ], like so: [x]
 ##### Stage 1
 
 -   [x] Stage 1.1 - Familiarise yourself with the template
--   [ ] Stage 1.2 - Implement vector mathematics
--   [ ] Stage 1.3 - Fire a ray for each pixel
--   [ ] Stage 1.4 - Calculate ray-entity intersections
--   [ ] Stage 1.5 - Output primitives as solid colours
+-   [x] Stage 1.2 - Implement vector mathematics
+-   [x] Stage 1.3 - Fire a ray for each pixel
+-   [x] Stage 1.4 - Calculate ray-entity intersections
+-   [x] Stage 1.5 - Output primitives as solid colours
 
 ##### Stage 2
 
--   [ ] Stage 2.1 - Illumination
--   [ ] Stage 2.2 - Shadow rays
--   [ ] Stage 2.3 - Reflection rays
--   [ ] Stage 2.4 - Refraction rays
--   [ ] Stage 2.5 - The Whitted Illumination Model
+-   [x] Stage 2.1 - Illumination
+-   [x] Stage 2.2 - Shadow rays
+-   [x] Stage 2.3 - Reflection rays
+-   [x] Stage 2.4 - Refraction rays
+-   [x] Stage 2.5 - The Whitted Illumination Model
 
 ##### Stage 3
 
--   [ ] Stage 3.1 - Advanced features
--   [ ] Stage 3.2 - Advanced add-ons
-    -   [ ] A.1 - Anti-aliasing
+-   [x] Stage 3.1 - Advanced features
+-   [x] Stage 3.2 - Advanced add-ons
+    -   [x] A.1 - Anti-aliasing
     -   [ ] A.2 - Soft shadows
-    -   [ ] A.3 - Depth of field blur
+    -   [x] A.3 - Depth of field blur
     -   [ ] A.4 - Motion blur
-    -   [ ] B.1 - Color texture mapping
+    -   [x] B.1 - Color texture mapping
     -   [ ] B.2 - Bump or normal mapping
     -   [ ] B.3 - Procedural textures
     -   [ ] C.1 - Simple animation
@@ -67,7 +67,7 @@ This render took **x** minutes and **y** seconds on my PC.
 I used the following command to render the image exactly as shown:
 
 ```
-dotnet run -- (... your command line args)
+dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1.85 -x 2 -w 600 -h 600
 ```
 
 ## Sample outputs
