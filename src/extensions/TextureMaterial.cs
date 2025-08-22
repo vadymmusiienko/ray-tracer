@@ -25,5 +25,18 @@ namespace RayTracer
             this.colorMap = colorMap;
             this.normalMap = normalMap;
         }
+
+        public override Color GetDiffuseColor(TextureCoord? coord)
+        {
+            if (!coord.HasValue)
+            {
+                return new Color(0, 0, 0); // Fall black if no coords
+            }
+
+            int x = (int)(coord.Value.U * (colorMap.Width - 1));
+            int y = (int)((1 - coord.Value.V) * (colorMap.Height - 1)); // flip V if needed
+
+            return colorMap.GetPixel(x, y);
+        }
     }
 }

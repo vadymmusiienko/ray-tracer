@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Numerics;
-using System.Threading;
 
 namespace RayTracer
 {

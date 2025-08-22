@@ -15,7 +15,7 @@ namespace RayTracer
         private const int MaxDepth = 5; // TODO: Move/Change?
 
         // Samples per pixel for Depth of field blur
-        private const int samplesPerPixDOF = 50; // TODO: Change this number
+        private const int samplesPerPixDOF = 10; // TODO: Change this number
 
         // Horizontal FOV
         private const double FOV = 60.0;
@@ -37,7 +37,15 @@ namespace RayTracer
         {
             this.options = options;
             this.camera = new Camera(Transform.Identity);
-            this.ambientLightColor = new Color(0, 0, 0);
+            // ! Harcoded ambietlightcolor
+            if (this.options.AmbientLightingEnabled)
+            {
+                this.ambientLightColor = new Color(1, 1, 1);
+            }
+            else
+            {
+                this.ambientLightColor = new Color(0, 0, 0);
+            }
             this.entities = new HashSet<SceneEntity>();
             this.lights = new HashSet<PointLight>();
             this.animations = new HashSet<Animation>();
