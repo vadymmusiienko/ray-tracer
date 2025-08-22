@@ -1,8 +1,8 @@
-
 using System;
 
 namespace RayTracer
 {
+    // ! This class is not finished
     /// <summary>
     /// Class to represent a texture material that is associated with an entity
     /// that is to be rendered by the ray tracer. This material generates its
@@ -47,8 +47,6 @@ namespace RayTracer
         /// <param name="u">The u coordinate in the texture map</param>
         /// <param name="v">The v coordinate in the texture map</param>
         /// <returns>The color at the specified texture coordinate</returns>
-        //!------------------------------
-        //TODO: Finish this!
         public override Color GetDiffuseColor(TextureCoord? coord)
         {
             if (!coord.HasValue)

@@ -9,10 +9,10 @@ namespace RayTracer
     public class BVH
     {
         // Max number of splits
-        const int MaxDepth = 20; // TODO: Try changing
+        const int MaxDepth = 20; // ! Can be changed
 
         // Min number of triangles in a node
-        const int MinTriPerNode = 4; // TODO: Try changing
+        const int MinTriPerNode = 4; // ! Can be changed
 
         // Store the root node
         Node root;
