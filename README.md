@@ -105,33 +105,33 @@ dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1
 ### Anti-aliasing
 
 <figure style="display:inline-block; text-align:center; margin-right:10px;">
-  <img src="images/AABefore.png" width="350"/>
+  <img src="images/AABefore.png" width="300"/>
   <figcaption>Before AA</figcaption>
 </figure>
 <figure style="display:inline-block; text-align:center;">
-  <img src="images/AAAfter.png" width="350"/>
+  <img src="images/AAAfter.png" width="300"/>
   <figcaption>After AA</figcaption>
 </figure>
 
 ### Depth of field blur
 
 <figure style="display:inline-block; text-align:center; margin-right:10px;">
-  <img src="images/FOBBefore.png" width="350"/>
+  <img src="images/FOBBefore.png" width="300"/>
   <figcaption>Before field of blur</figcaption>
 </figure>
 <figure style="display:inline-block; text-align:center;">
-  <img src="images/FOBAfter.png" width="350"/>
+  <img src="images/FOBAfter.png" width="300"/>
   <figcaption>After field of blur</figcaption>
 </figure>
 
 ### Colour textures
 
 <figure style="display:inline-block; text-align:center; margin-right:10px;">
-  <img src="images/TEXBefore.png" width="350"/>
+  <img src="images/TEXBefore.png" width="300"/>
   <figcaption>Before colour texture mapping</figcaption>
 </figure>
 <figure style="display:inline-block; text-align:center;">
-  <img src="images/TEXAfter.png" width="350"/>
+  <img src="images/TEXAfter.png" width="300"/>
   <figcaption>After colour texture mapping</figcaption>
 </figure>
 
