@@ -86,7 +86,7 @@ namespace RayTracer
                 return;
             }
 
-            // Slplit by the longest axis
+            // Split by the longest axis
             Vector3 size = parent.bounds.size;
             // 0 - X-axis, 1 - Y-axis, 2 - Z-axis
             int SplitAxis = size.X > Math.Max(size.Y, size.Z) ? 0 : size.Y > size.Z ? 1 : 2;

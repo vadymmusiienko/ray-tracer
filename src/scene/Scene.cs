@@ -35,10 +35,10 @@ namespace RayTracer
         {
             this.options = options;
             this.camera = new Camera(Transform.Identity);
-            // ! Harcoded ambietlightcolor
+            // ! Ambietlightcolor can be hardcoded here
             if (this.options.AmbientLightingEnabled)
             {
-                this.ambientLightColor = new Color(1, 1, 1);
+                this.ambientLightColor = new Color(0, 0, 0); // !Set to 0 like in a template
             }
             else
             {
