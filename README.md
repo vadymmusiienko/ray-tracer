@@ -1,4 +1,4 @@
-# COMP30019 - Project 1 - Ray Tracer
+# COMP40019 - Project 1 - Ray Tracer
 
 **Name:** Vadym Musiienko\
 **Student Number:** 1785479 \
@@ -106,7 +106,7 @@ dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1
 
 | Before AA                                    | After AA                                    |
 | -------------------------------------------- | ------------------------------------------- |
-| <img src="images/AABefore.png" width="300"/> | <img src="images/AAAfter.png" width="300"/> |
+| <img src="images/AABefore.png" width="400"/> | <img src="images/AAAfter.png" width="400"/> |
 
 ---
 
@@ -114,7 +114,7 @@ dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1
 
 | Before depth of field blur                    | After depth of field blur                    |
 | --------------------------------------------- | -------------------------------------------- |
-| <img src="images/FOBBefore.png" width="300"/> | <img src="images/FOBAfter.png" width="300"/> |
+| <img src="images/FOBBefore.png" width="400"/> | <img src="images/FOBAfter.png" width="400"/> |
 
 ---
 
@@ -122,7 +122,7 @@ dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1
 
 | Before colour texture mapping                 | After colour texture mapping                 |
 | --------------------------------------------- | -------------------------------------------- |
-| <img src="images/TEXBefore.png" width="300"/> | <img src="images/TEXAfter.png" width="300"/> |
+| <img src="images/TEXBefore.png" width="400"/> | <img src="images/TEXAfter.png" width="400"/> |
 
 ## References
 
