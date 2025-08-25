@@ -1,50 +1,10 @@
-# COMP40019 - Project 1 - Ray Tracer
+# Ray Tracer
 
-**Name:** Vadym Musiienko\
-**Student Number:** 1785479 \
-**Username:** vmusiienko \
-**Email:** vmusiienko@student.unimelb.edu.au
+**Author:** Vadym Musiienko\
 
-## Completed stages
+## Implementation details
 
-<!---
-Tip: To tick, place an x between the square brackes [ ], like so: [x]
--->
-
-##### Stage 1
-
--   [x] Stage 1.1 - Familiarise yourself with the template
--   [x] Stage 1.2 - Implement vector mathematics
--   [x] Stage 1.3 - Fire a ray for each pixel
--   [x] Stage 1.4 - Calculate ray-entity intersections
--   [x] Stage 1.5 - Output primitives as solid colours
-
-##### Stage 2
-
--   [x] Stage 2.1 - Illumination
--   [x] Stage 2.2 - Shadow rays
--   [x] Stage 2.3 - Reflection rays
--   [x] Stage 2.4 - Refraction rays
--   [x] Stage 2.5 - The Whitted Illumination Model
-
-##### Stage 3
-
--   [x] Stage 3.1 - Advanced features
--   [x] Stage 3.2 - Advanced add-ons
-    -   [x] A.1 - Anti-aliasing
-    -   [ ] A.2 - Soft shadows
-    -   [x] A.3 - Depth of field blur
-    -   [ ] A.4 - Motion blur
-    -   [x] B.1 - Color texture mapping
-    -   [ ] B.2 - Bump or normal mapping
-    -   [ ] B.3 - Procedural textures
-    -   [ ] C.1 - Simple animation
-    -   [ ] C.2 - Keyframe animation
-    -   [ ] C.3 - Camera animation
-
-## Stage 3 implementation details
-
-### Stage 3.1 - OBJ models and custom camera
+### OBJ models and custom camera
 
 To support OBJ models, I made three helper classes.
 
@@ -66,7 +26,7 @@ I used two extra loops to iterate through each subpixel. Each subpixel was cente
 
 For every subpixel coordinate, I cast a ray and computed its color. I summed all these colors together, then divided by the number of samples (`AAMult * AAMult`) to get the final pixel color.
 
-### Stage 3.2 A3 - Depth of field blur
+### Depth of field blur
 
 To implement depth of field blur, I modified my camera. Whenever `apertureRadius` is greater than 0 (i.e., depth of field blur is enabled), I cast multiple rays per pixel (controlled by a constant, which I currently have set to 10).
 
@@ -76,7 +36,7 @@ The next step is finding the **focal point** — the point that should be in foc
 
 [This is the article I used to learn about depth of field blur and understand the process.](https://pathtracing.home.blog/depth-of-field/)
 
-### Stage 3.2 B1 - Colour texture mapping
+### Colour texture mapping
 
 To implement color texture mapping, I first needed to store all the vertex texture coordinates from the OBJ file — thankfully, the OBJ reader already does this. So every OBJ face (an `OBJTriangle` instance) already has its 2D vertex texture coordinates.
 
@@ -100,7 +60,7 @@ I used the following command to render the image exactly as shown:
 dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1.85 -x 2 -w 1000 -h 1000
 ```
 
-## Stage 3.2 Before and After
+## Before and After
 
 ### Anti-aliasing
 
