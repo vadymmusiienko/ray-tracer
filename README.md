@@ -1,6 +1,6 @@
 # Ray Tracer
 
-**Author:** Vadym Musiienko\
+**Author:** Vadym Musiienko
 
 ## Implementation details
 
