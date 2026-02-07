@@ -1,9 +1,19 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Slider } from "@/components/ui/slider"
+
+const MIN_DIM = 100
+const MAX_DIM = 4000
+const DIM_STEP = 100
+
+function clampDim(value: number): number {
+  const rounded = Math.round(value / DIM_STEP) * DIM_STEP
+  return Math.max(MIN_DIM, Math.min(MAX_DIM, rounded))
+}
 
 export interface SceneParams {
   width: number
@@ -17,6 +27,60 @@ export interface SceneParams {
 interface SceneParametersProps {
   params: SceneParams
   onChange: (params: SceneParams) => void
+}
+
+function DimensionInput({
+  id,
+  label,
+  value,
+  onCommit,
+}: {
+  id: string
+  label: string
+  value: number
+  onCommit: (v: number) => void
+}) {
+  const [draft, setDraft] = useState(String(value))
+
+  useEffect(() => {
+    setDraft(String(value))
+  }, [value])
+
+  function commit() {
+    const parsed = parseInt(draft)
+    if (isNaN(parsed) || parsed < MIN_DIM) {
+      const clamped = clampDim(isNaN(parsed) ? MIN_DIM : parsed)
+      setDraft(String(clamped))
+      onCommit(clamped)
+    } else {
+      const clamped = clampDim(parsed)
+      setDraft(String(clamped))
+      onCommit(clamped)
+    }
+  }
+
+  return (
+    <div className="flex-1 space-y-1.5">
+      <Label htmlFor={id} className="text-xs text-muted-foreground">
+        {label}
+      </Label>
+      <Input
+        id={id}
+        type="text"
+        inputMode="numeric"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value.replace(/[^0-9]/g, ""))}
+        onBlur={commit}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") commit()
+        }}
+        className="font-mono text-sm"
+      />
+      <p className="text-xs text-muted-foreground">
+        {MIN_DIM} - {MAX_DIM}, step {DIM_STEP}
+      </p>
+    </div>
+  )
 }
 
 export function SceneParameters({ params, onChange }: SceneParametersProps) {
@@ -33,38 +97,18 @@ export function SceneParameters({ params, onChange }: SceneParametersProps) {
       </div>
 
       <div className="flex gap-3">
-        <div className="flex-1 space-y-1.5">
-          <Label htmlFor="width" className="text-xs text-muted-foreground">
-            Width (px)
-          </Label>
-          <Input
-            id="width"
-            type="number"
-            min={100}
-            max={2000}
-            value={params.width}
-            onChange={(e) =>
-              onChange({ ...params, width: parseInt(e.target.value) || 400 })
-            }
-            className="font-mono text-sm"
-          />
-        </div>
-        <div className="flex-1 space-y-1.5">
-          <Label htmlFor="height" className="text-xs text-muted-foreground">
-            Height (px)
-          </Label>
-          <Input
-            id="height"
-            type="number"
-            min={100}
-            max={2000}
-            value={params.height}
-            onChange={(e) =>
-              onChange({ ...params, height: parseInt(e.target.value) || 400 })
-            }
-            className="font-mono text-sm"
-          />
-        </div>
+        <DimensionInput
+          id="width"
+          label="Width (px)"
+          value={params.width}
+          onCommit={(w) => onChange({ ...params, width: w })}
+        />
+        <DimensionInput
+          id="height"
+          label="Height (px)"
+          value={params.height}
+          onCommit={(h) => onChange({ ...params, height: h })}
+        />
       </div>
 
       <div className="space-y-2">
