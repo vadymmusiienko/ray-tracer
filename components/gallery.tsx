@@ -63,6 +63,7 @@ export function Gallery() {
                 src={renders[selected].src}
                 alt={renders[selected].title}
                 fill
+                sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover"
                 priority
               />
@@ -93,6 +94,7 @@ export function Gallery() {
                   src={render.src}
                   alt={render.title}
                   fill
+                  sizes="(max-width: 1024px) 33vw, 128px"
                   className="object-cover"
                 />
                 <span className="sr-only">View {render.title}</span>
