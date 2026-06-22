@@ -2,6 +2,54 @@
 
 **Author:** Vadym Musiienko
 
+A Whitted-style recursive ray tracer written in C#, originally a single console
+app driven by a brittle positional text format. It has since grown into a small
+full-stack project: the engine is a reusable library, there's a clean JSON scene
+format, an HTTP render API, and a Next.js scene-builder frontend for my
+portfolio.
+
+## Architecture
+
+The solution is split so the rendering engine can be shared between a CLI and a
+web service, with the UI as a separate app:
+
+| Component       | Path                 | What it is                                                                                                                                                                       |
+| --------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Core engine** | `src/RayTracer.Core` | The ray tracer itself (math, scene, primitives, BVH, materials) as a class library. No I/O assumptions. Also defines the JSON scene format + loader.                             |
+| **CLI**         | `src/RayTracer.Cli`  | Command-line front end. Renders a scene file to a PNG (and GIFs for animations). Accepts the legacy `.txt` format and the new `.json` format.                                    |
+| **Web API**     | `src/RayTracer.Web`  | ASP.NET Core minimal API. `POST /api/render` takes a JSON scene and returns a PNG; `GET /api/capabilities` advertises the available options and limits. API-only (no UI).        |
+| **Frontend**    | `frontend/`          | Next.js (App Router + TypeScript) scene builder. A form-based UI that assembles a JSON scene, sends it to the API, and shows the result. Built to fold into my larger portfolio. |
+
+Key changes from the original submission:
+
+- **Engine split into a shared library** so the CLI and web service render through the exact same code paths.
+- **JSON scene format** replacing the positional text DSL, with validation and a server-side asset allow-list (user input can never trigger arbitrary file reads).
+- **Parallelized rendering** (`Parallel.For` over scanlines) for a large speedup on multi-core machines.
+- **Web API + interactive builder** so scenes can be created and rendered from the browser.
+- **Correctness fixes**: total internal reflection, additive reflection/refraction blending, two-sided shading (interiors render correctly), and softer non-black shadows via an optional ambient fill.
+
+### Running it
+
+Render from the CLI:
+
+```bash
+dotnet run --project src/RayTracer.Cli -- -f tests/sample_scene_1.txt -o out.png
+```
+
+Run the web app (API + frontend) in two terminals:
+
+```bash
+# 1. Render API on http://localhost:5099
+dotnet run --project src/RayTracer.Web --urls http://localhost:5099
+
+# 2. Frontend on http://localhost:3000
+cd frontend && npm install && npm run dev
+```
+
+> **Note:** these projects target .NET 9. On a machine that only has a newer SDK
+> installed (e.g. .NET 10), prefix `dotnet` commands with
+> `DOTNET_ROLL_FORWARD=Major`.
+
 ## Implementation details
 
 ### OBJ models and custom camera
@@ -56,8 +104,8 @@ This render took **35** minutes and **46** seconds on my PC. (Despite using the 
 
 I used the following command to render the image exactly as shown:
 
-```
-dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1.85 -x 2 -w 1000 -h 1000
+```bash
+dotnet run --project src/RayTracer.Cli -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1.85 -x 2 -w 1000 -h 1000
 ```
 
 ## Before and After
