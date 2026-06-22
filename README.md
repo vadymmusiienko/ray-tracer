@@ -91,7 +91,3 @@ dotnet run -- -f tests/final_scene.txt -o images/final_scene.png -l -r 0.04 -t 1
 3. [Polar coordinates explanation](https://en.wikipedia.org/wiki/Polar_coordinate_system)
 4. [Depth of field blur article](https://pathtracing.home.blog/depth-of-field/)
 5. [Texture mapping article](https://medium.com/@Ksatese/advanced-ray-tracer-part-4-87d1c98eecff)
-
-## TODO:
-
-There are some things that need fixing. The pictures were taken from Gradescope at the University of Melbourne. [see TODO directory](./todo)
