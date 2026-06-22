@@ -1,0 +1,71 @@
+{
+  "render": {
+    "width": 480,
+    "height": 480,
+    "aaMultiplier": 2,
+    "ambientLighting": true
+  },
+  "camera": {
+    "position": [0, 0, 0],
+    "rotationAxis": [0, 0, 1],
+    "rotationAngle": 0,
+    "scale": 1
+  },
+  "materials": [
+    {
+      "id": "Red",
+      "type": "standard",
+      "ambient": [0.1, 0.05, 0.05],
+      "diffuse": [1, 0.5, 0.5],
+      "specular": [0, 0, 0],
+      "shininess": 0,
+      "reflectivity": 0,
+      "transmissivity": 0,
+      "refractiveIndex": 1
+    },
+    {
+      "id": "Green",
+      "type": "standard",
+      "ambient": [0.05, 0.1, 0.05],
+      "diffuse": [0.5, 1, 0.5],
+      "specular": [1, 1, 1],
+      "shininess": 50,
+      "reflectivity": 0,
+      "transmissivity": 0,
+      "refractiveIndex": 1
+    },
+    {
+      "id": "Blue",
+      "type": "standard",
+      "ambient": [0.05, 0.05, 0.1],
+      "diffuse": [0.5, 0.5, 1],
+      "specular": [0, 0, 0],
+      "shininess": 0,
+      "reflectivity": 0,
+      "transmissivity": 0,
+      "refractiveIndex": 1
+    }
+  ],
+  "lights": [{ "position": [0.75, 1.5, 0], "color": [1, 1, 1] }],
+  "objects": [
+    {
+      "type": "plane",
+      "point": [0, -1, 0],
+      "normal": [0, 1, 0],
+      "material": "Red"
+    },
+    {
+      "type": "sphere",
+      "center": [-0.25, 0, 2],
+      "radius": 0.5,
+      "material": "Green"
+    },
+    {
+      "type": "triangle",
+      "v0": [0.45, -0.05, 1.75],
+      "v1": [0.7, 0.25, 2.5],
+      "v2": [0.95, -0.1, 2],
+      "material": "Blue"
+    }
+  ]
+}

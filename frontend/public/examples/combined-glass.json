@@ -1,0 +1,120 @@
+{
+  "render": {
+    "width": 480,
+    "height": 480,
+    "aaMultiplier": 2,
+    "ambientLighting": true
+  },
+  "camera": {
+    "position": [0, 0, 0],
+    "rotationAxis": [0, 0, 1],
+    "rotationAngle": 0,
+    "scale": 1
+  },
+  "materials": [
+    {
+      "id": "TintGlass",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.25, 0.12, 0.06],
+      "specular": [0.3, 0.3, 0.3],
+      "shininess": 40,
+      "reflectivity": 0.3,
+      "transmissivity": 0.5,
+      "refractiveIndex": 1.5
+    },
+    {
+      "id": "Mirror",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.05, 0.05, 0.05],
+      "specular": [1, 1, 1],
+      "shininess": 100,
+      "reflectivity": 0.92,
+      "transmissivity": 0,
+      "refractiveIndex": 1
+    },
+    {
+      "id": "Floor",
+      "type": "procedural",
+      "pattern": "Checkers",
+      "scaleU": 8,
+      "scaleV": 8,
+      "color1": [0.9, 0.9, 0.9],
+      "color2": [0.1, 0.1, 0.1]
+    },
+    {
+      "id": "White",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.8, 0.8, 0.8],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Blue",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.2, 0.4, 0.9],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Red",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.9, 0.2, 0.2],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Green",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.2, 0.8, 0.3],
+      "specular": [0, 0, 0]
+    }
+  ],
+  "lights": [{ "position": [0, 1.0, 2.2], "color": [1, 1, 1] }],
+  "objects": [
+    {
+      "type": "sphere",
+      "center": [-0.55, -0.4, 2.5],
+      "radius": 0.6,
+      "material": "TintGlass"
+    },
+    {
+      "type": "sphere",
+      "center": [0.7, -0.5, 2.8],
+      "radius": 0.5,
+      "material": "Mirror"
+    },
+    {
+      "type": "plane",
+      "point": [0, -1, 0],
+      "normal": [0, 1, 0],
+      "material": "Floor"
+    },
+    {
+      "type": "plane",
+      "point": [0, 1.2, 0],
+      "normal": [0, -1, 0],
+      "material": "White"
+    },
+    {
+      "type": "plane",
+      "point": [0, 0, 4.5],
+      "normal": [0, 0, -1],
+      "material": "Blue"
+    },
+    {
+      "type": "plane",
+      "point": [-1.6, 0, 0],
+      "normal": [1, 0, 0],
+      "material": "Red"
+    },
+    {
+      "type": "plane",
+      "point": [1.6, 0, 0],
+      "normal": [-1, 0, 0],
+      "material": "Green"
+    }
+  ]
+}

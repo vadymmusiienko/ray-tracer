@@ -1,0 +1,20 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field > label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.span2 {
+  grid-column: 1 / -1;
+}
+
+.vec3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}

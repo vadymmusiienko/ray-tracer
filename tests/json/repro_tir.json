@@ -1,0 +1,98 @@
+{
+  "render": { "width": 320, "height": 320, "aaMultiplier": 1 },
+  "camera": {
+    "position": [0, 0, 0],
+    "rotationAxis": [0, 0, 1],
+    "rotationAngle": 0,
+    "scale": 1
+  },
+  "materials": [
+    {
+      "id": "Diamond",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0, 0, 0],
+      "specular": [0, 0, 0],
+      "shininess": 0,
+      "reflectivity": 0,
+      "transmissivity": 1,
+      "refractiveIndex": 2.4
+    },
+    {
+      "id": "Floor",
+      "type": "procedural",
+      "pattern": "Checkers",
+      "scaleU": 8,
+      "scaleV": 8,
+      "color1": [0.95, 0.95, 0.95],
+      "color2": [0.05, 0.05, 0.05]
+    },
+    {
+      "id": "White",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.8, 0.8, 0.8],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Blue",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.2, 0.4, 0.9],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Red",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.9, 0.2, 0.2],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Green",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.2, 0.8, 0.3],
+      "specular": [0, 0, 0]
+    }
+  ],
+  "lights": [{ "position": [0, 1.0, 2.2], "color": [1, 1, 1] }],
+  "objects": [
+    {
+      "type": "sphere",
+      "center": [0, -0.35, 2.5],
+      "radius": 0.65,
+      "material": "Diamond"
+    },
+    {
+      "type": "plane",
+      "point": [0, -1, 0],
+      "normal": [0, 1, 0],
+      "material": "Floor"
+    },
+    {
+      "type": "plane",
+      "point": [0, 1.2, 0],
+      "normal": [0, -1, 0],
+      "material": "White"
+    },
+    {
+      "type": "plane",
+      "point": [0, 0, 4.5],
+      "normal": [0, 0, -1],
+      "material": "Blue"
+    },
+    {
+      "type": "plane",
+      "point": [-1.6, 0, 0],
+      "normal": [1, 0, 0],
+      "material": "Red"
+    },
+    {
+      "type": "plane",
+      "point": [1.6, 0, 0],
+      "normal": [-1, 0, 0],
+      "material": "Green"
+    }
+  ]
+}

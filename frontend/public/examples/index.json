@@ -1,0 +1,38 @@
+[
+  {
+    "id": "basics",
+    "name": "Basics — sphere, plane, triangle",
+    "file": "basics.json",
+    "description": "A simple intro scene: the three core primitives under one light."
+  },
+  {
+    "id": "inside-sphere",
+    "name": "Inside a Sphere",
+    "file": "inside-sphere.json",
+    "description": "Camera inside a giant dome with a mirror and glass ball — shows back-faces shade correctly."
+  },
+  {
+    "id": "glass-pyramid-tir",
+    "name": "Glass Pyramid — Total Internal Reflection",
+    "file": "glass-pyramid-tir.json",
+    "description": "A glass tetrahedron in a colour box. Its facets mirror the scene via total internal reflection."
+  },
+  {
+    "id": "combined-glass",
+    "name": "Reflective + Refractive Glass",
+    "file": "combined-glass.json",
+    "description": "A tinted glass ball (reflection AND refraction, additive) beside a near-perfect mirror."
+  },
+  {
+    "id": "cornell-showcase",
+    "name": "Cornell Box — Bunny, Mirror & Glass",
+    "file": "cornell-showcase.json",
+    "description": "A 5000-triangle bunny mesh flanked by a mirror and a glass sphere in a Cornell box."
+  },
+  {
+    "id": "textured-bunny",
+    "name": "Textured Bunny",
+    "file": "textured-bunny.json",
+    "description": "An image-textured bunny on a checker floor with a small mirror ball."
+  }
+]

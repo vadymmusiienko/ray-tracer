@@ -1,0 +1,101 @@
+{
+  "render": {
+    "width": 440,
+    "height": 440,
+    "aaMultiplier": 1,
+    "ambientLighting": true
+  },
+  "camera": {
+    "position": [0, 0, 0],
+    "rotationAxis": [0, 0, 1],
+    "rotationAngle": 0,
+    "scale": 1
+  },
+  "materials": [
+    { "id": "BunnyTex", "type": "texture", "colorMap": "bunny-tex" },
+    { "id": "FloorTex", "type": "texture", "colorMap": "checkers" },
+    {
+      "id": "White",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.8, 0.8, 0.8],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Red",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.9, 0.3, 0.3],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Green",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.3, 0.9, 0.4],
+      "specular": [0, 0, 0]
+    },
+    {
+      "id": "Mirror",
+      "type": "standard",
+      "ambient": [0, 0, 0],
+      "diffuse": [0.05, 0.05, 0.05],
+      "specular": [1, 1, 1],
+      "shininess": 100,
+      "reflectivity": 0.88,
+      "transmissivity": 0,
+      "refractiveIndex": 1
+    }
+  ],
+  "lights": [
+    { "position": [0, 0.9, 1.5], "color": [0.6, 0.6, 0.6] },
+    { "position": [-0.6, 0.3, 0.5], "color": [0.5, 0.5, 0.5] }
+  ],
+  "objects": [
+    {
+      "type": "objModel",
+      "model": "bunny-tex",
+      "position": [0.1, -0.8, 2.0],
+      "rotationAxis": [0, 1, 0],
+      "rotationAngle": 0,
+      "scale": 5.65,
+      "material": "BunnyTex"
+    },
+    {
+      "type": "sphere",
+      "center": [0.75, -0.7, 1.4],
+      "radius": 0.3,
+      "material": "Mirror"
+    },
+    {
+      "type": "plane",
+      "point": [0, -1, 0],
+      "normal": [0, 1, 0],
+      "material": "FloorTex"
+    },
+    {
+      "type": "plane",
+      "point": [0, 1, 0],
+      "normal": [0, -1, 0],
+      "material": "White"
+    },
+    {
+      "type": "plane",
+      "point": [0, 0, 3],
+      "normal": [0, 0, -1],
+      "material": "White"
+    },
+    {
+      "type": "plane",
+      "point": [-1, 0, 0],
+      "normal": [1, 0, 0],
+      "material": "Red"
+    },
+    {
+      "type": "plane",
+      "point": [1, 0, 0],
+      "normal": [-1, 0, 0],
+      "material": "Green"
+    }
+  ]
+}

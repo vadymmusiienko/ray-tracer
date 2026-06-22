@@ -1,0 +1,26 @@
+.section {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  padding: 6px 14px 14px;
+}
+
+.summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 8px 0;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pill {
+  background: var(--panel-2);
+  color: var(--muted);
+  border-radius: 20px;
+  padding: 1px 9px;
+  font-size: 12px;
+  font-weight: 500;
+}
